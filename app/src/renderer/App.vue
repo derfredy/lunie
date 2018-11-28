@@ -16,6 +16,7 @@
     <modal-no-nodes v-if="config.modals.noNodes.active" />
     <modal-node-halted v-if="config.modals.nodeHalted.active" />
     <modal-lcd-approval v-if="approvalRequired" :hash="approvalRequired" />
+    <modal-qr-code v-if="send.qr" />
   </div>
 </template>
 
@@ -29,6 +30,7 @@ import ModalLcdApproval from "common/TmModalLCDApproval"
 import ModalNoNodes from "common/TmModalNoNodes"
 import ModalNodeHalted from "common/TmModalNodeHalted"
 import ModalReceive from "common/TmModalReceive"
+import ModalQrCode from "common/ModalQRCode"
 import Onboarding from "common/TmOnboarding"
 import Session from "common/TmSession"
 import store from "./vuex/store"
@@ -43,6 +45,7 @@ export default {
     TmNotifications,
     ModalNoNodes,
     ModalNodeHalted,
+    ModalQrCode,
     Onboarding,
     Session
   },
@@ -52,7 +55,8 @@ export default {
       `config`,
       `themes`,
       `approvalRequired`,
-      `onboarding`
+      `onboarding`,
+      `send`
     ])
   },
   mounted() {

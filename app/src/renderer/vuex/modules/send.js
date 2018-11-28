@@ -2,7 +2,9 @@ export default ({ node }) => {
   let lock = null
 
   let state = {
-    nonce: `0`
+    nonce: `0`,
+    tx: null,
+    qr: null
   }
 
   const mutations = {
@@ -66,6 +68,9 @@ export default ({ node }) => {
     // happens at once. otherwise, we might try to send 2 transactions
     // using the same sequence number, which means 1 of them won't be valid.
     async sendTx(...args) {
+      actions.sendWithSigner(...args)
+      return
+
       // wait to acquire lock
       while (lock != null) {
         // eslint-disable-line no-unmodified-loop-condition
@@ -87,6 +92,35 @@ export default ({ node }) => {
     },
     resetSessionData({ state }) {
       state.nonce = `0`
+    },
+    async sendWithSigner(...args) {
+      let { state, rootState } = args[0]
+      let request = args[1]
+      let requestMetaData = {
+        sequence: state.nonce,
+        name: rootState.user.account,
+        password: rootState.user.password,
+        account_number: rootState.wallet.accountNumber, // TODO move into LCD?
+        chain_id: rootState.connection.lastHeader.chain_id
+      }
+      request.base_req = requestMetaData
+
+      // extract type
+      let type = request.type || `send`
+      delete request.type
+
+      // extract "to" address
+      let to = request.to
+      delete request.to
+      request.gas = `50000000`
+
+      state.qr = {
+        consumer: `cosmos-signer`,
+        type,
+        to,
+        tx: request,
+        endpoint: rootState.connection.node.remoteLcdURL + `/broadcast`
+      }
     }
   }
 

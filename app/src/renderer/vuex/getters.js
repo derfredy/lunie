@@ -22,6 +22,7 @@ export const onboarding = state => state.onboarding
 export const allTransactions = state =>
   state.transactions.wallet.concat(state.transactions.staking)
 export const wallet = state => state.wallet
+export const send = state => state.send
 
 // staking
 export const delegation = state => state.delegation
