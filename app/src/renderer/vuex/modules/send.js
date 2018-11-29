@@ -114,11 +114,24 @@ export default ({ node }) => {
       delete request.to
       request.gas = `50000000`
 
+      // only build the request and return it
+      request.generateOnly = true
+
+      // submit to LCD to build, sign, and broadcast
+      let req = to ? node[type](to, request) : node[type](request)
+
+      let res = await req.catch(err => {
+        // TODO
+        throw new Error(err)
+      })
+
+      console.log(res)
+
       state.qr = {
         consumer: `cosmos-signer`,
         type,
         to,
-        tx: request,
+        tx: res,
         endpoint: rootState.connection.node.remoteLcdURL + `/broadcast`
       }
     }
