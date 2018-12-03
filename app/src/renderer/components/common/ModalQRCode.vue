@@ -4,7 +4,7 @@
       <div class="tm-modal__icon"><i class="material-icons">camera</i></div>
       <div class="tm-modal__title">Sign With Signer App</div>
       <div class="tm-modal__body">
-        <vue-qr :size="200" :text="message"></vue-qr>
+        <vue-qr :size="400" :text="message"></vue-qr>
       </div>
       <div class="tm-modal__footer">
         <tm-btn
@@ -26,13 +26,9 @@ export default {
   name: `modal-qr-code`,
   components: { VueQr },
   computed: {
-    ...mapGetters([`config`, `nodeURL`]),
+    ...mapGetters([`config`, `nodeURL`, `send`]),
     message() {
-      return JSON.stringify({
-        consumer: `cosmos-signer`,
-        tx: {},
-        endpoint: this.nodeURL + `/broadcast`
-      })
+      return JSON.stringify(this.send.qr)
     }
   },
   methods: {

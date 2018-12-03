@@ -9,7 +9,7 @@ const Client = (axios, localLcdURL, remoteLcdURL) => {
       url += `?generate_only=true`
     }
 
-    const result = await axios({ data, method, url: url + path })
+    const result = await axios({ data, method, url: url })
     return result.data
   }
 

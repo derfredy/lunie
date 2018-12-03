@@ -131,7 +131,7 @@ export default ({ node }) => {
         consumer: `cosmos-signer`,
         type,
         to,
-        tx: res,
+        tx: res.value,
         endpoint: rootState.connection.node.remoteLcdURL + `/broadcast`
       }
     }
