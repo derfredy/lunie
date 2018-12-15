@@ -36,7 +36,11 @@
     "precommit": "pretty-quick --staged",
     "prepush": "bash ./tasks/changelog-changed-check.sh && yarn lint",
     "postcheckout": "yarn",
-    "watch": "tasks/watch.sh"
+    "watch": "tasks/watch.sh",
+    "fullnode": "/Users/fabo/Development/voyager/builds/Gaia/darwin_amd64/gaiad start --home /Users/fabo/.gaiad-testnet",
+    "stargate": "/Users/fabo/Development/voyager/builds/Gaia/darwin_amd64/gaiacli rest-server --laddr 'tcp://localhost:9070' --home '/Users/fabo/.cosmos-voyager-dev/local-testnet/lcd' --node 'http://localhost:26657' --chain-id 'local-testnet' --trust-node true",
+    "backend": "yarn fullnode & yarn stargate",
+    "backend:fixed-https": "yarn fullnode & yarn stargate --ssl-certfile 'ssl/server_dev.crt' --ssl-keyfile 'ssl/server_dev.key'"
   },
   "devDependencies": {
     "@nodeguy/cli": "0.2.2",
