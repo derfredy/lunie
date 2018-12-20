@@ -4,6 +4,7 @@ export default ({ node }) => {
   const state = {
     loading: false,
     error: null,
+    loaded: false,
     deposits: {}
   }
 
@@ -13,11 +14,16 @@ export default ({ node }) => {
     }
   }
   let actions = {
-    async getProposalDeposits({ state, commit }, proposalId) {
+    async getProposalDeposits({ state, commit, rootState }, proposalId) {
       state.loading = true
+
+      if (!rootState.connection.connected) return
+
       try {
         let deposits = await node.queryProposalDeposits(proposalId)
         state.error = null
+        state.loading = false
+        state.loaded = true
         commit(`setProposalDeposits`, proposalId, deposits)
       } catch (error) {
         commit(`notifyError`, {
@@ -27,21 +33,21 @@ export default ({ node }) => {
         Raven.captureException(error)
         state.error = error
       }
-      state.loading = false
     },
     async submitDeposit(
       {
         rootState: { wallet },
         dispatch
       },
-      { proposal_id, amount }
+      { proposal_id, amount, password }
     ) {
       await dispatch(`sendTx`, {
         type: `submitProposalDeposit`,
         to: proposal_id,
         proposal_id,
         depositer: wallet.address,
-        amount
+        amount,
+        password
       })
       await dispatch(`getProposalDeposits`, proposal_id)
       await dispatch(`getProposal`, proposal_id)

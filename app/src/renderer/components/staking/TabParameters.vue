@@ -1,7 +1,17 @@
 <template>
-  <div v-if="config.devMode">
+  <tm-data-connecting
+    v-if="(!stakingParameters.parameters.loaded || !pool.loaded) && !connected"
+  />
+  <tm-data-loading
+    v-else-if="
+      (!stakingParameters.parameters.loaded &&
+        stakingParameters.parameters.loading) ||
+        (!pool.loaded && pool.loading)
+    "
+  />
+  <div v-else>
     <div>
-      <h3>
+      <h3 class="staking-pool">
         Staking Pool
         <i
           v-tooltip.top="poolTooltips.description"
@@ -14,14 +24,19 @@
           <div class="column">
             <dl class="info_dl">
               <dt>
-                Loose {{ parameters.parameters.bond_denom }}
+                Loose
+                {{
+                  stakingParameters.parameters.bond_denom
+                    ? stakingParameters.parameters.bond_denom
+                    : bondingDenom
+                }}
                 <i
                   v-tooltip.top="poolTooltips.loose_tokens"
                   class="material-icons info-button"
                   >info_outline</i
                 >
               </dt>
-              <dd>
+              <dd id="loose_tokens">
                 {{ pool.pool.loose_tokens ? pool.pool.loose_tokens : `n/a` }}
               </dd>
             </dl>
@@ -29,14 +44,19 @@
           <div class="column">
             <dl class="info_dl">
               <dt>
-                Delegated {{ parameters.parameters.bond_denom }}
+                Delegated
+                {{
+                  stakingParameters.parameters.bond_denom
+                    ? stakingParameters.parameters.bond_denom
+                    : bondingDenom
+                }}
                 <i
                   v-tooltip.top="poolTooltips.bonded_tokens"
                   class="material-icons info-button"
                   >info_outline</i
                 >
               </dt>
-              <dd>
+              <dd id="bonded_tokens">
                 {{ pool.pool.bonded_tokens ? pool.pool.bonded_tokens : `n/a` }}
               </dd>
             </dl>
@@ -45,7 +65,7 @@
       </div>
     </div>
     <div>
-      <h3>
+      <h3 class="staking-parameters">
         Staking Parameters
         <i
           v-tooltip.top="paramsTooltips.description"
@@ -65,9 +85,9 @@
                   >info_outline</i
                 >
               </dt>
-              <dd>
+              <dd id="unbonding_time">
                 {{
-                  parameters.parameters.unbonding_time
+                  stakingParameters.parameters.unbonding_time
                     ? unbondingTimeInDays + ` days`
                     : `n/a`
                 }}
@@ -75,10 +95,10 @@
             </dl>
             <dl class="info_dl">
               <dt>Current Staking Coin Denomination</dt>
-              <dd>
+              <dd id="bond_denom">
                 {{
-                  parameters.parameters.bond_denom
-                    ? parameters.parameters.bond_denom
+                  stakingParameters.parameters.bond_denom
+                    ? stakingParameters.parameters.bond_denom
                     : `n/a`
                 }}
               </dd>
@@ -87,10 +107,10 @@
           <div class="column">
             <dl class="info_dl">
               <dt>Maximum Number of Validators</dt>
-              <dd>
+              <dd id="max_validators">
                 {{
-                  parameters.parameters.max_validators
-                    ? parameters.parameters.max_validators
+                  stakingParameters.parameters.max_validators
+                    ? stakingParameters.parameters.max_validators
                     : `n/a`
                 }}
               </dd>
@@ -105,6 +125,7 @@
 <script>
 import { mapGetters } from "vuex"
 import { TmBtn, TmListItem, TmPage, TmPart, TmToolBar } from "@tendermint/ui"
+import TmDataConnecting from "common/TmDataConnecting"
 export default {
   name: `tab-staking-parameters`,
   components: {
@@ -112,7 +133,8 @@ export default {
     TmListItem,
     TmPage,
     TmPart,
-    TmToolBar
+    TmToolBar,
+    TmDataConnecting
   },
   data: () => ({
     paramsTooltips: {
@@ -128,10 +150,16 @@ export default {
     }
   }),
   computed: {
-    ...mapGetters([`config`, `parameters`, `pool`]),
+    ...mapGetters([
+      `config`,
+      `stakingParameters`,
+      `pool`,
+      `bondingDenom`,
+      `connected`
+    ]),
     unbondingTimeInDays() {
       return (
-        parseInt(this.parameters.parameters.unbonding_time) /
+        parseInt(this.stakingParameters.parameters.unbonding_time) /
         (10 ** 9 * 60 * 60 * 24)
       )
     }
@@ -184,7 +212,7 @@ h3 {
 
 .info_dl dt {
   color: var(--dim);
-  font-size: small;
+  font-size: var(--sm);
   margin-bottom: 4px;
 }
 

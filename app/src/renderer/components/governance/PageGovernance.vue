@@ -4,7 +4,8 @@
       <tm-balance :tabs="tabs">
         <tm-btn
           id="propose-btn"
-          value="Create Proposal"
+          :disabled="!connected"
+          :value="connected ? 'Create Proposal' : 'Connecting...'"
           color="primary"
           @click.native="onPropose"
         />
@@ -49,18 +50,28 @@ export default {
   },
   data: () => ({
     query: ``,
-    tabs: [`Proposals`],
+    tabs: [
+      {
+        displayName: `Proposals`,
+        pathName: `Proposals`
+      }
+      // TODO uncomment when updated to latest SDK
+      // {
+      //   displayName: `Parameters`,
+      //   pathName: `Governance Parameters`
+      // }
+    ],
     showModalPropose: false
   }),
   computed: {
     // TODO: get min deposit denom from gov params
-    ...mapGetters([`proposals`, `filters`, `bondingDenom`])
+    ...mapGetters([`proposals`, `filters`, `bondingDenom`, `connected`])
   },
   methods: {
     onPropose() {
       this.showModalPropose = true
     },
-    async propose({ title, description, type, amount }) {
+    async propose({ title, description, type, amount, password }) {
       try {
         await this.$store.dispatch(`submitProposal`, {
           title,
@@ -71,7 +82,8 @@ export default {
               denom: this.bondingDenom.toLowerCase(),
               amount: String(amount)
             }
-          ]
+          ],
+          password
         })
         this.$store.commit(`notify`, {
           title: `Successful proposal submission!`,

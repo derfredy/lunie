@@ -4,6 +4,7 @@ import Vue from "vue"
 export default ({ node }) => {
   let emptyState = {
     loading: false,
+    loaded: false,
     error: null,
     proposals: {}
   }
@@ -27,11 +28,13 @@ export default ({ node }) => {
       // clear previous account state
       rootState.proposals = JSON.parse(JSON.stringify(emptyState))
     },
-    async getProposals({ state, commit }) {
+    async getProposals({ state, commit, rootState }) {
       state.loading = true
+
+      if (!rootState.connection.connected) return
+
       try {
         let proposals = await node.queryProposals()
-        state.error = null
         if (proposals.length > 0) {
           proposals.forEach(proposal => {
             commit(`setProposal`, proposal.value)
@@ -44,6 +47,9 @@ export default ({ node }) => {
             // }
           })
         }
+        state.error = null
+        state.loading = false
+        state.loaded = true
       } catch (error) {
         commit(`notifyError`, {
           title: `Error fetching proposals`,
@@ -52,12 +58,13 @@ export default ({ node }) => {
         Raven.captureException(error)
         state.error = error
       }
-      state.loading = false
     },
     async getProposal({ state, commit }, proposal_id) {
       state.loading = true
       try {
         state.error = null
+        state.loading = false
+        state.loaded = true // TODO make state for only proposal
         let proposal = await node.queryProposal(proposal_id)
         commit(`setProposal`, proposal.value)
       } catch (error) {
@@ -68,14 +75,13 @@ export default ({ node }) => {
         Raven.captureException(error)
         state.error = error
       }
-      state.loading = false
     },
     async submitProposal(
       {
         rootState: { wallet },
         dispatch
       },
-      { title, description, type, initial_deposit }
+      { title, description, type, initial_deposit, password }
     ) {
       await dispatch(`sendTx`, {
         type: `submitProposal`,
@@ -83,7 +89,8 @@ export default ({ node }) => {
         proposal_type: type,
         title,
         description,
-        initial_deposit
+        initial_deposit,
+        password
       })
       await dispatch(`getProposals`)
     }

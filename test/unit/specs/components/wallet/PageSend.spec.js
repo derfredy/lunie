@@ -79,23 +79,6 @@ describe(`PageSend`, () => {
     ).toBe(coins[1].denom.toUpperCase())
   })
 
-  it(`should populate the select options with networks`, () => {
-    wrapper.update()
-
-    expect(
-      wrapper
-        .findAll(`option`)
-        .at(3)
-        .text()
-    ).toBe(`Select zone...`)
-    expect(
-      wrapper
-        .findAll(`option`)
-        .at(4)
-        .text()
-    ).toBe(`basecoind-demo1`)
-  })
-
   it(`should work without providing a default denom`, () => {
     let { wrapper, store } = mount(PageSend)
     store.commit(`setConnected`, true)
@@ -111,7 +94,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address: ``,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     wrapper.vm.onSubmit()
@@ -127,7 +110,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address: `asdf`,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     wrapper.vm.onSubmit()
@@ -143,7 +126,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address: `asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf`,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     wrapper.vm.onSubmit()
@@ -158,7 +141,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address: `!@#$!@#$!@#$!@#$!@#$!@#$!@#$!@#$!@#$!@#$`,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     wrapper.vm.onSubmit()
@@ -166,7 +149,7 @@ describe(`PageSend`, () => {
     expect(wrapper.vm.$el).toMatchSnapshot()
   })
 
-  it(`should trigger confirmation modal if form is corect`, async () => {
+  it(`should trigger confirmation modal if form is correct`, async () => {
     let { wrapper, store } = mount(PageSend, {
       propsData: {
         denom: `mycoin`
@@ -179,7 +162,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     wrapper.vm.onSubmit()
@@ -199,7 +182,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     await wrapper.vm.onApproved()
@@ -213,7 +196,7 @@ describe(`PageSend`, () => {
         denom: `notmycoin`,
         address,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     node.sign = () => Promise.reject()
@@ -238,7 +221,7 @@ describe(`PageSend`, () => {
         denom: `mycoin`,
         address,
         amount: 2,
-        zoneId: `cosmos-hub-1`
+        password: `1234567890`
       }
     })
     expect(wrapper.find(`#send-btn`).exists()).toBe(true)
@@ -246,5 +229,28 @@ describe(`PageSend`, () => {
     wrapper.update()
     expect(wrapper.find(`#send-btn`).exists()).toBe(false)
     expect(wrapper.vm.$el).toMatchSnapshot()
+  })
+
+  describe(`default values are set correctly`, () => {
+    it(`the 'amount' defaults to 0`, () => {
+      expect(wrapper.vm.fields.amount).toEqual(0)
+    })
+
+    it(`account password defaults to an empty string`, () => {
+      expect(wrapper.vm.fields.password).toEqual(``)
+    })
+
+    it(`password is hidden by default`, () => {
+      expect(wrapper.vm.showPassword).toBe(false)
+    })
+  })
+
+  describe(`Password display`, () => {
+    it(`toggles the password between text and password`, () => {
+      wrapper.vm.togglePassword()
+      expect(wrapper.vm.showPassword).toBe(true)
+      wrapper.vm.togglePassword()
+      expect(wrapper.vm.showPassword).toBe(false)
+    })
   })
 })

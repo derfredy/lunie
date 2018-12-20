@@ -39,14 +39,14 @@ describe(`TableProposals`, () => {
     wrapper.vm.sort.order = `asc`
 
     expect(wrapper.vm.filteredProposals[0].title).toEqual(
-      lcdClientMock.state.proposals[0].title
+      lcdClientMock.state.proposals[`1`].title
     )
 
     wrapper.vm.sort.property = `proposal_id`
     wrapper.vm.sort.order = `desc`
 
     expect(wrapper.vm.filteredProposals[0].title).toEqual(
-      lcdClientMock.state.proposals.reverse()[0].title
+      lcdClientMock.state.proposals[`6`].title
     )
   })
 
@@ -54,40 +54,40 @@ describe(`TableProposals`, () => {
     store.commit(`setSearchVisible`, [`proposals`, true])
     store.commit(`setSearchQuery`, [
       `proposals`,
-      lcdClientMock.state.proposals[0].title
+      lcdClientMock.state.proposals[`1`].title
     ])
     expect(wrapper.vm.filteredProposals[0].description).toBe(
-      lcdClientMock.state.proposals[0].description
+      lcdClientMock.state.proposals[`1`].description
     )
     wrapper.update()
     expect(wrapper.vm.$el).toMatchSnapshot()
     store.commit(`setSearchQuery`, [
       `proposals`,
-      lcdClientMock.state.proposals[1].title
+      lcdClientMock.state.proposals[`2`].title
     ])
     expect(wrapper.vm.filteredProposals[0].description).toBe(
-      lcdClientMock.state.proposals[1].description
+      lcdClientMock.state.proposals[`2`].description
     )
   })
 
   it(`should update 'somethingToSearch' when there's nothing to search`, () => {
     expect(wrapper.vm.somethingToSearch).toBe(true)
     wrapper.setProps({
-      proposals: [],
+      proposals: {},
       loading: true
     })
     expect(wrapper.vm.somethingToSearch).toBe(false)
   })
 
-  it(`should show placeholder if delegates are loading`, () => {
+  it(`should show placeholder if no items to display`, () => {
     let { wrapper } = mount(TableProposals, {
       propsData: {
-        proposals: [],
+        proposals: {},
         loading: true
       },
-      stubs: { "tm-data-loading": `<data-loading />` }
+      stubs: { "data-empty-search": `<data-empty-search />` }
     })
-    expect(wrapper.contains(`data-loading`)).toBe(true)
+    expect(wrapper.contains(`data-empty-search`)).toBe(true)
   })
 
   describe(`setSearch`, () => {
@@ -114,7 +114,7 @@ describe(`TableProposals`, () => {
     it(`should not show search when there is nothing to search`, () => {
       let { wrapper, store } = mount(TableProposals, {
         propsData: {
-          proposals: [],
+          proposals: {},
           loading: false
         },
         $store

@@ -16,11 +16,17 @@ export default ({ node }) => {
   }
 
   async function doSend({ state, dispatch, commit, rootState }, args) {
+    if (!rootState.connection.connected) {
+      throw Error(
+        `Currently not connected to a secure node. Please try again when Voyager has secured a connection.`
+      )
+    }
+
     await dispatch(`queryWalletBalances`) // the nonce was getting out of sync, this is to force a sync
     let requestMetaData = {
       sequence: state.nonce,
       name: rootState.user.account,
-      password: rootState.user.password,
+      password: args.password,
       account_number: rootState.wallet.accountNumber, // TODO move into LCD?
       chain_id: rootState.connection.lastHeader.chain_id
     }
@@ -34,6 +40,8 @@ export default ({ node }) => {
     let to = args.to
     delete args.to
     args.gas = `50000000`
+
+    args.generate_only = true
 
     // submit to LCD to build, sign, and broadcast
     let req = to ? node[type](to, args) : node[type](args)

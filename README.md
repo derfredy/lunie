@@ -47,10 +47,10 @@ yarn build:testnets
 
 ### Check Out Voyager
 
-Voyager requires Node.js `>=9.4.0`. If you have a different version of Node.js installed (e.g. Node.js `8.11 LTS`), you can use `n` to install the correct version. The following command will use `n` to install it alongside your current version of Node.js.
+Voyager requires Node.js `>=10.13.0`. If you have a different version of Node.js installed (e.g. Node.js `8.11 LTS`), you can use `n` to install the correct version. The following command will use `n` to install it alongside your current version of Node.js.
 
 ```bash
-npm i -g n && n 9.4.0
+npm i -g n && n 10.13.0
 ```
 
 Yarn is a JS package packager we use manage Voyager dependencies. [Download it.](https://yarnpkg.com/lang/en/docs/install)
@@ -134,10 +134,18 @@ node tasks/build/build.js --os darwin --binaryPath $GOPATH/bin/gaiacli
 
 ## Testing
 
-Voyager is using [Jest](https://facebook.github.io/jest) to run unit tests.
+If you would like to run all the tests you can run:
 
 ```bash
 $ yarn test
+```
+
+### Unit Tests
+
+Voyager is using [Jest](https://facebook.github.io/jest) to run unit tests.
+
+```bash
+$ yarn test:unit
 ```
 
 You can run the unit tests for a single file (e.g.,
@@ -147,10 +155,33 @@ PageValidator.spec.js) whenever there are changes like this:
 $ yarn watch PageValidator
 ```
 
+### Coverage
+
 To check test coverage locally run following. It will spin up a webserver and provide you with a link to the coverage report web page.
 
 ```bash
 $ yarn test:coverage
+```
+
+### End to end
+
+End to end testing is performed via `tape`, you can run all of them using:
+
+```bash
+$ yarn test:e2e
+```
+
+If you would like to run a single test please set the TEST variable (Unix systems):
+
+```bash
+$ TEST=test/e2e/init.js yarn test:e2e
+```
+
+You can also run the `tape` command directly, but then you need to run the packaging of Voyager before it (i.e. necessary on Windows):
+
+```bash
+$ yarn pack
+$ node_modules/.bin/tape test/e2e/init.js
 ```
 
 ---

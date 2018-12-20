@@ -10,7 +10,8 @@
         >
       </tm-tool-bar>
     </div>
-    <tm-data-error v-if="!proposal" /><template v-else>
+    <tm-data-error v-if="!proposal" />
+    <template v-else>
       <div
         class="validator-profile__header validator-profile__section proposal"
       >
@@ -32,14 +33,16 @@
               <tm-btn
                 v-if="proposal.proposal_status === 'VotingPeriod'"
                 id="vote-btn"
-                value="Vote"
+                :value="connected ? 'Vote' : 'Connecting...'"
+                :disabled="!connected"
                 color="primary"
                 @click.native="onVote"
               />
               <tm-btn
                 v-if="proposal.proposal_status === 'DepositPeriod'"
                 id="deposit-btn"
-                value="Deposit"
+                :value="connected ? 'Deposit' : 'Connecting...'"
+                :disabled="!connected"
                 color="primary"
                 @click.native="onDeposit"
               />
@@ -48,8 +51,8 @@
                   proposal.proposal_status === 'Passed' ||
                     proposal.proposal_status === 'Rejected'
                 "
-                disabled="disabled"
                 value="Deposit / Vote"
+                disabled="disabled"
                 color="primary"
               />
             </div>
@@ -118,6 +121,7 @@
         :show-modal-vote.sync="showModalVote"
         :proposal-id="proposalId"
         :proposal-title="proposal.title"
+        :last-vote-option="lastVote && lastVote.option"
         @castVote="castVote"
       />
     </template>
@@ -154,13 +158,20 @@ export default {
   },
   data: () => ({
     showModalDeposit: false,
-    showModalVote: false
+    showModalVote: false,
+    lastVote: undefined
   }),
   computed: {
     // TODO: get denom from governance params
-    ...mapGetters([`bondingDenom`, `proposals`]),
+    ...mapGetters([
+      `bondingDenom`,
+      `proposals`,
+      `connected`,
+      `wallet`,
+      `votes`
+    ]),
     proposal() {
-      let proposal = this.proposals[this.proposalId]
+      let proposal = this.proposals.proposals[this.proposalId]
       if (proposal) {
         proposal.tally_result.yes = Math.round(
           parseFloat(proposal.tally_result.yes)
@@ -184,7 +195,7 @@ export default {
       return moment(new Date(this.proposal.submit_time)).fromNow()
     },
     votingStartedAgo() {
-      return moment(new Date(this.proposal.voting_start_block)).fromNow()
+      return moment(new Date(this.proposal.voting_start_time)).fromNow()
     },
     depositEndsIn() {
       return moment(new Date(this.proposal.deposit_end_time)).fromNow()
@@ -216,8 +227,7 @@ export default {
     status() {
       if (this.proposal.proposal_status === `Passed`)
         return {
-          message: `This proposal has passed`,
-          color: `green`
+          message: `This proposal has passed`
         }
       if (this.proposal.proposal_status === `Rejected`)
         return {
@@ -232,7 +242,7 @@ export default {
       if (this.proposal.proposal_status === `VotingPeriod`)
         return {
           message: `Voting for this proposal is open`,
-          color: `blue`
+          color: `green`
         }
       else
         return {
@@ -242,18 +252,25 @@ export default {
     }
   },
   methods: {
-    onVote() {
+    async onVote() {
       this.showModalVote = true
+
+      // The error is already handled with notifyError in votes.js
+      await this.$store.dispatch(`getProposalVotes`, this.proposalId)
+      this.lastVote =
+        this.votes[this.proposalId] &&
+        this.votes[this.proposalId].find(e => e.voter === this.wallet.address)
     },
     onDeposit() {
       this.showModalDeposit = true
     },
-    async deposit({ amount }) {
+    async deposit({ amount, password }) {
       try {
         // TODO: support multiple coins
         await this.$store.dispatch(`submitDeposit`, {
           proposal_id: this.proposalId,
-          amount
+          amount,
+          password
         })
 
         // TODO: get min deposit denom from gov params
@@ -272,11 +289,12 @@ export default {
         })
       }
     },
-    async castVote({ option }) {
+    async castVote({ option, password }) {
       try {
         await this.$store.dispatch(`submitVote`, {
           proposal_id: this.proposalId,
-          option
+          option,
+          password
         })
 
         this.$store.commit(`notify`, {

@@ -13,7 +13,6 @@
       v-if="config.modals.error.active"
       :body="config.modals.error.message"
     />
-    <modal-no-nodes v-if="config.modals.noNodes.active" />
     <modal-node-halted v-if="config.modals.nodeHalted.active" />
     <modal-lcd-approval v-if="approvalRequired" :hash="approvalRequired" />
     <modal-qr-code v-if="send.qr" />
@@ -27,7 +26,6 @@ import { TmNotifications } from "@tendermint/ui"
 import ModalError from "common/TmModalError"
 import ModalHelp from "common/TmModalHelp"
 import ModalLcdApproval from "common/TmModalLCDApproval"
-import ModalNoNodes from "common/TmModalNoNodes"
 import ModalNodeHalted from "common/TmModalNodeHalted"
 import ModalReceive from "common/TmModalReceive"
 import ModalQrCode from "common/ModalQRCode"
@@ -43,7 +41,6 @@ export default {
     ModalLcdApproval,
     ModalReceive,
     TmNotifications,
-    ModalNoNodes,
     ModalNodeHalted,
     ModalQrCode,
     Onboarding,

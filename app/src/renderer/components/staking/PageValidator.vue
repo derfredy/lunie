@@ -41,13 +41,15 @@
             <div class="column validator-profile__header__actions">
               <tm-btn
                 id="delegation-btn"
-                value="Delegate"
+                :disabled="!connected"
+                :value="connected ? 'Delegate' : 'Connecting...'"
                 color="primary"
                 @click.native="onDelegation"
               />
               <tm-btn
                 id="undelegation-btn"
-                value="Undelegate"
+                :disabled="!connected"
+                :value="connected ? 'Undelegate' : 'Connecting...'"
                 color="secondary"
                 @click.native="onUndelegation"
               />
@@ -89,7 +91,7 @@
             <dl class="colored_dl">
               <dt>Commission</dt>
               <dd id="validator-profile__commission">
-                {{ validator.commission.rate }} %
+                {{ num.shortNumber(validator.commission.rate) }} %
               </dd>
             </dl>
             <dl v-if="config.devMode" class="colored_dl">
@@ -250,7 +252,8 @@ export default {
       `keybase`,
       `oldBondedAtoms`,
       `totalAtoms`,
-      `wallet`
+      `wallet`,
+      `connected`
     ]),
     validator() {
       let validator = this.delegates.delegates.find(
@@ -343,7 +346,7 @@ export default {
         this.showCannotModal = true
       }
     },
-    async submitDelegation({ amount, from }) {
+    async submitDelegation({ amount, from, password }) {
       const delegatorAddr = this.wallet.address
       let stakingTransactions = {}
       let txTitle,
@@ -381,7 +384,8 @@ export default {
 
       try {
         await this.$store.dispatch(`submitDelegation`, {
-          stakingTransactions
+          stakingTransactions,
+          password
         })
 
         this.$store.commit(`notify`, {
@@ -395,7 +399,7 @@ export default {
         })
       }
     },
-    async submitUndelegation({ amount }) {
+    async submitUndelegation({ amount, password }) {
       try {
         await this.$store.dispatch(`submitDelegation`, {
           stakingTransactions: {
@@ -405,7 +409,8 @@ export default {
                 validator: this.validator
               }
             ]
-          }
+          },
+          password
         })
 
         this.$store.commit(`notify`, {
@@ -473,7 +478,7 @@ export default {
   display: flex;
   margin-bottom: 1rem;
   padding: 2rem;
-  width: 100%;
+  min-width: 63rem;
 }
 
 .column {
@@ -508,14 +513,14 @@ export default {
 .validator-profile__header__name__title {
   color: #fff;
   display: inline-block;
-  font-size: h1;
-  line-height: h1;
+  font-size: var(--h1);
+  line-height: var(--h1);
   font-weight: 400;
   padding: 0 0.5rem 0.5rem 0;
 }
 
 .validator-profile__header__name__address {
-  font-size: small;
+  font-size: var(--sm);
 }
 
 .validator-profile__header__actions {
@@ -575,7 +580,7 @@ export default {
 
 .info_dl dt {
   color: var(--dim);
-  font-size: small;
+  font-size: var(--sm);
   margin-bottom: 4px;
 }
 
@@ -595,7 +600,7 @@ export default {
   align-items: center;
   display: flex;
   flex-direction: column;
-  width: 6rem;
+  width: 7rem;
 }
 
 .colored_dl:not(:last-child) {
@@ -604,7 +609,7 @@ export default {
 
 .colored_dl dt {
   color: var(--dim);
-  font-size: small;
+  font-size: var(--sm);
   margin-bottom: 0.5rem;
   text-align: center;
 }

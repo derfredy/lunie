@@ -301,20 +301,20 @@ let state = {
     loose_tokens: `100.0000000000`,
     bonded_tokens: `50.0000000000`
   },
-  parameters: {
+  stakingParameters: {
     unbonding_time: `259200000000000`,
     max_validators: 100,
     bond_denom: `steak`
   },
-  govParameters: {
+  governanceParameters: {
     deposit: {
       min_deposit: [
         {
-          denom: `steak`,
-          amount: `coin`
+          denom: `stake`,
+          amount: `10.0000000000`
         }
       ],
-      max_deposit_period: `86400000000`
+      max_deposit_period: `86400000000000`
     },
     tallying: {
       threshold: `0.5000000000`,
@@ -322,7 +322,7 @@ let state = {
       governance_penalty: `0.0100000000`
     },
     voting: {
-      voting_period: `86400000000`
+      voting_period: `86400000000000`
     }
   },
   sendHeight: 2,
@@ -332,8 +332,8 @@ let state = {
     jailed_until: `1970-01-01T00:00:00Z`,
     signed_blocks_counter: 1
   },
-  proposals: [
-    {
+  proposals: {
+    "1": {
       proposal_id: `1`,
       proposal_type: `Text`,
       title: `Proposal Title`,
@@ -362,7 +362,7 @@ let state = {
         abstain: `56`
       }
     },
-    {
+    "2": {
       proposal_id: `2`,
       proposal_type: `Text`,
       title: `VotingPeriod proposal`,
@@ -391,7 +391,7 @@ let state = {
         abstain: `0`
       }
     },
-    {
+    "5": {
       proposal_id: `5`,
       proposal_type: `Text`,
       title: `Custom text proposal`,
@@ -420,7 +420,7 @@ let state = {
         abstain: `0`
       }
     },
-    {
+    "6": {
       proposal_id: `6`,
       proposal_type: `Text`,
       title: `Rejected proposal`,
@@ -449,7 +449,7 @@ let state = {
         abstain: `20`
       }
     }
-  ],
+  },
   votes: {
     1: [
       {
@@ -752,7 +752,7 @@ module.exports = {
 
       // update sender balance
       let coinBalance = fromAccount.coins.find(
-        c => c.denom === state.parameters.bond_denom
+        c => c.denom === state.stakingParameters.bond_denom
       )
 
       coinBalance.amount = String(parseInt(coinBalance.amount) + amount)
@@ -869,7 +869,7 @@ module.exports = {
       // add redelegation object
       let coins = {
         amount: tx.shares, // in mock mode we assume 1 share = 1 token
-        denom: state.parameters.bond_denom
+        denom: state.stakingParameters.bond_denom
       }
       let minTime = Date.now()
       red = {
@@ -971,7 +971,7 @@ module.exports = {
     return state.pool
   },
   async getStakingParameters() {
-    return state.parameters
+    return state.stakingParameters
   },
   async getProposals() {
     return state.proposals || []
@@ -987,10 +987,12 @@ module.exports = {
     let results = []
     // get new proposal id
     let proposal_id = `1`
-    let proposalsLen = state.proposals.length
-    if (state.proposals && proposalsLen > 0) {
+    const proposalIds = Object.keys(state.proposals)
+    if (state.proposals && proposalIds.length > 0) {
       proposal_id = String(
-        parseInt(state.proposals[proposalsLen - 1].proposal_id) + 1
+        parseInt(
+          proposalIds.reduce((max_id, id) => (id > max_id ? id : max_id), `0`)
+        ) + 1
       )
     }
 
@@ -1029,7 +1031,7 @@ module.exports = {
     }
 
     // we add the proposal to the state to make it available for the submitProposalDeposit function
-    state.proposals.push(proposal)
+    state.proposals[proposal.proposal_id] = proposal
     results = await this.submitProposalDeposit({
       base_req,
       proposal_id,
@@ -1038,12 +1040,12 @@ module.exports = {
     })
     // remove proposal from state if it fails
     if (results[0].check_tx.code !== 0) {
-      state.proposals.pop()
+      delete state.proposals[proposal.proposal_id]
     }
     return results
   },
   async getProposal(proposalId) {
-    return state.proposals.find(proposal => proposal.proposal_id === proposalId)
+    return state.proposals[proposalId]
   },
   async getProposalTally(proposalId) {
     let proposal = await this.getProposal(proposalId)
@@ -1182,8 +1184,11 @@ module.exports = {
     results.push(txResult(0))
     return results
   },
-  async getProposalVotes(proposalId) {
-    return state.votes[proposalId] || []
+  async queryProposalVotes(proposalId) {
+    return (
+      state.votes[proposalId] ||
+      Promise.reject({ message: `Invalid proposalId #${proposalId}` })
+    )
   },
   async submitProposalVote({
     proposal_id,
@@ -1248,9 +1253,9 @@ module.exports = {
   async queryProposals() {
     // TODO: return only value of the `value` property when https://github.com/cosmos/cosmos-sdk/issues/2507 is solved
     let proposals = state.proposals
-    return proposals.map(proposal => {
+    return Object.keys(proposals).map(key => {
       return {
-        value: JSON.parse(JSON.stringify(proposal)),
+        value: JSON.parse(JSON.stringify(proposals[key])),
         type: `gov/TextProposal`
       }
     })
@@ -1271,13 +1276,13 @@ module.exports = {
     )
   },
   async getGovDepositParameters() {
-    return state.govParameters.deposit
+    return state.governanceParameters.deposit
   },
   async getGovTallyingParameters() {
-    return state.govParameters.tallying
+    return state.governanceParameters.tallying
   },
   async getGovVotingParameters() {
-    return state.govParameters.voting
+    return state.governanceParameters.voting
   },
   // exports to be used in tests
   state,
