@@ -2,7 +2,7 @@
   <div class="tm-tool-bar">
     <a
       v-tooltip.bottom="'Back'"
-      :disabled="user.history.length === 0"
+      :disabled="user.history && user.history.length === 0"
       class="back"
       @click="back"
       ><i class="material-icons">arrow_back</i></a
@@ -25,7 +25,7 @@
 import { mapGetters, mapMutations } from "vuex"
 export default {
   // the name needs to be different from TmToolBar (tm-tool-bar) or else recursive rendering takes place
-  name: `vm-tool-bar`,
+  name: `tool-bar`,
   computed: {
     ...mapGetters([`user`, `lastPage`])
   },

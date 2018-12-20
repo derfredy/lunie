@@ -32,7 +32,7 @@ describe(`LCD Client`, () => {
       const application = Express()
 
       const middleware = await promisify(createMiddleware)(
-        path.join(__dirname, `../helpers/Gaia-Lite.yaml`),
+        path.join(__dirname, `../../helpers/Gaia-Lite.yaml`),
         application
       )
 
@@ -627,18 +627,18 @@ describe(`LCD Client`, () => {
             {
               data: undefined,
               method: `GET`,
-              url: `http://remotehost/txs?tag=action='submit-proposal'&tag=proposer='${
+              url: `http://remotehost/txs?action=submit-proposal&proposer=${
                 lcdClientMock.addresses[0]
-              }'`
+              }`
             }
           ],
           [
             {
               data: undefined,
               method: `GET`,
-              url: `http://remotehost/txs?tag=action='deposit'&tag=depositer='${
+              url: `http://remotehost/txs?action=deposit&depositor=${
                 lcdClientMock.addresses[0]
-              }'`
+              }`
             }
           ]
         ])
