@@ -27,12 +27,47 @@ export default {
   components: { VueQr },
   computed: {
     ...mapGetters([`config`, `nodeURL`, `send`]),
-    message() {
-      return JSON.stringify(this.send.qr)
+    async message() {
+      return this.send.qr
     }
   },
   methods: {
-    close() {}
+    close() {},
+    storeOnFirebase({ to, tx, endpoint }) {
+      let docRef = db.collection("txs").add({
+        to,
+        endpoint,
+        tx
+      })
+      let url = `https://firestore.googleapis.com/v1beta1/projects/voyager-broker/databases/(default)/documents/txs/${
+        docRef.id
+      }`
+      return JSON.stringify({
+        type: "url",
+        consumer: `cosmos-signer`,
+        url
+      })
+    }
+  },
+  mounted() {
+    const firebase = require("firebase")
+    var config = {
+      apiKey: "AIzaSyDEgSQAg3er0dulYzRqI63IdN2Pc1Gh_D0",
+      authDomain: "voyager-broker.firebaseapp.com",
+      databaseURL: "https://voyager-broker.firebaseio.com",
+      projectId: "voyager-broker",
+      storageBucket: "voyager-broker.appspot.com",
+      messagingSenderId: "1064638067900"
+    }
+    firebase.initializeApp(config)
+
+    // Initialize Cloud Firestore through Firebase
+    var db = firebase.firestore()
+
+    // Disable deprecated features
+    db.settings({
+      timestampsInSnapshots: true
+    })
   }
 }
 </script>
