@@ -115,6 +115,11 @@ async function main() {
 
     if (firstStart) {
       store.dispatch(`showInitialScreen`)
+      if (config.development) {
+        store.dispatch(`signIn`, {
+          account: `main-account`
+        })
+      }
 
       // test connection
       node.lcdConnected().then(connected => {

@@ -259,10 +259,10 @@ export default {
           amount: [{ denom, amount: amount.toString() }]
         })
         this.sending = false
-        this.$store.commit(`notify`, {
-          title: `Successfully Sent`,
-          body: `Successfully sent ${amount} ${denom} to ${address}`
-        })
+        // this.$store.commit(`notify`, {
+        //   title: `Successfully Sent`,
+        //   body: `Successfully sent ${amount} ${denom} to ${address}`
+        // })
         // resets send transaction form
         this.resetForm()
       } catch (error) {

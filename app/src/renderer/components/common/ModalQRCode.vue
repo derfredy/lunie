@@ -11,7 +11,7 @@
           id="tm-modal__btn"
           size="lg"
           icon="close"
-          value="Abort"
+          value="Close"
           @click.native="close"
         />
       </div>
@@ -20,54 +20,56 @@
 </template>
 
 <script>
+import TmBtn from "common/TmBtn"
 import { mapGetters } from "vuex"
 import VueQr from "vue-qr"
 export default {
   name: `modal-qr-code`,
-  components: { VueQr },
+  components: { VueQr, TmBtn },
   computed: {
     ...mapGetters([`config`, `nodeURL`, `send`]),
-    async message() {
-      return this.send.qr
-    }
-  },
-  methods: {
-    close() {},
-    storeOnFirebase({ to, tx, endpoint }) {
-      let docRef = db.collection("txs").add({
-        to,
-        endpoint,
-        tx
-      })
-      let url = `https://firestore.googleapis.com/v1beta1/projects/voyager-broker/databases/(default)/documents/txs/${
-        docRef.id
-      }`
-      return JSON.stringify({
-        type: "url",
-        consumer: `cosmos-signer`,
-        url
-      })
+    message() {
+      return JSON.stringify(this.send.qr)
     }
   },
   mounted() {
-    const firebase = require("firebase")
-    var config = {
-      apiKey: "AIzaSyDEgSQAg3er0dulYzRqI63IdN2Pc1Gh_D0",
-      authDomain: "voyager-broker.firebaseapp.com",
-      databaseURL: "https://voyager-broker.firebaseio.com",
-      projectId: "voyager-broker",
-      storageBucket: "voyager-broker.appspot.com",
-      messagingSenderId: "1064638067900"
+    // const firebase = require("firebase")
+    // var config = {
+    //   apiKey: "AIzaSyDEgSQAg3er0dulYzRqI63IdN2Pc1Gh_D0",
+    //   authDomain: "voyager-broker.firebaseapp.com",
+    //   databaseURL: "https://voyager-broker.firebaseio.com",
+    //   projectId: "voyager-broker",
+    //   storageBucket: "voyager-broker.appspot.com",
+    //   messagingSenderId: "1064638067900"
+    // }
+    // firebase.initializeApp(config)
+    // // Initialize Cloud Firestore through Firebase
+    // var db = firebase.firestore()
+    // // Disable deprecated features
+    // db.settings({
+    //   timestampsInSnapshots: true
+    // })
+  },
+  methods: {
+    close() {
+      // HACK
+      this.$store.state.send.qr = null
     }
-    firebase.initializeApp(config)
-
-    // Initialize Cloud Firestore through Firebase
-    var db = firebase.firestore()
-
-    // Disable deprecated features
-    db.settings({
-      timestampsInSnapshots: true
-    })
+    // storeOnFirebase({ to, tx, endpoint }) {
+    //   let docRef = db.collection(`txs`).add({
+    //     to,
+    //     endpoint,
+    //     tx
+    //   })
+    //   let url = `https://firestore.googleapis.com/v1beta1/projects/voyager-broker/databases/(default)/documents/txs/${
+    //     docRef.id
+    //   }`
+    //   return JSON.stringify({
+    //     type: `url`,
+    //     consumer: `cosmos-signer`,
+    //     url
+    //   })
+    // }
   }
 }
 </script>
@@ -86,7 +88,7 @@ export default {
   justify-content: center;
 }
 
-.tm-modal {
+.tm-modal-error {
   padding: 1.5rem;
   max-width: 40rem;
 }
@@ -105,14 +107,14 @@ export default {
 }
 
 .tm-modal__title {
-  font-size: h1;
+  font-size: var(--h1);
   font-weight: 500;
   line-height: 1;
   margin-bottom: 1.5rem;
 }
 
 .tm-modal__body {
-  font-size: lg;
+  font-size: var(--lg);
   color: var(--dim);
   margin-bottom: 3rem;
 }

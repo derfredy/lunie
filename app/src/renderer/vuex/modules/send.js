@@ -39,9 +39,7 @@ export default ({ node }) => {
     // extract "to" address
     let to = args.to
     delete args.to
-    args.gas = `50000000`
-
-    args.generate_only = true
+    // args.gas = `50000000`
 
     // submit to LCD to build, sign, and broadcast
     let req = to ? node[type](to, args) : node[type](args)
@@ -109,7 +107,10 @@ export default ({ node }) => {
         name: rootState.user.account,
         password: rootState.user.password,
         account_number: rootState.wallet.accountNumber, // TODO move into LCD?
-        chain_id: rootState.connection.lastHeader.chain_id
+        chain_id: rootState.connection.lastHeader.chain_id,
+
+        // only build the request and return it
+        generate_only: true
       }
       request.base_req = requestMetaData
 
@@ -121,9 +122,6 @@ export default ({ node }) => {
       let to = request.to
       delete request.to
       request.gas = `50000000`
-
-      // only build the request and return it
-      request.generateOnly = true
 
       // submit to LCD to build, sign, and broadcast
       let req = to ? node[type](to, request) : node[type](request)

@@ -4,11 +4,6 @@ const Client = (axios, localLcdURL, remoteLcdURL) => {
   async function request(method, path, data, useRemote) {
     let url = (useRemote ? remoteLcdURL : localLcdURL) + path
 
-    if (data && data.generateOnly) {
-      delete data.generateOnly
-      url += `?generate_only=true`
-    }
-
     const result = await axios({ data, method, url: url })
     return result.data
   }
