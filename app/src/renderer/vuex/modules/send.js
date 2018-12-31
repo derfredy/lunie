@@ -15,7 +15,11 @@ export default ({ node }) => {
     }
   }
 
-  async function doSend({ state, dispatch, commit, rootState }, args) {
+  async function doSend(
+    { state, dispatch, commit, rootState },
+    submissionType,
+    payload
+  ) {
     if (!rootState.connection.connected) {
       throw Error(
         `Currently not connected to a secure node. Please try again when Voyager has secured a connection.`
@@ -26,23 +30,27 @@ export default ({ node }) => {
     let requestMetaData = {
       sequence: state.nonce,
       name: rootState.user.account,
-      password: args.password,
+      password: payload.password,
       account_number: rootState.wallet.accountNumber, // TODO move into LCD?
       chain_id: rootState.connection.lastHeader.chain_id
     }
-    args.base_req = requestMetaData
+    payload.base_req = requestMetaData
 
     // extract type
-    let type = args.type || `send`
-    delete args.type
+    let type = payload.type || `send`
+    delete payload.type
 
     // extract "to" address
-    let to = args.to
-    delete args.to
+    let to = payload.to
+    delete payload.to
     // args.gas = `50000000`
 
+    if (submissionType === `signer`) {
+      payload.base_req.generate_only = true
+    }
+
     // submit to LCD to build, sign, and broadcast
-    let req = to ? node[type](to, args) : node[type](args)
+    let req = to ? node[type](to, payload) : node[type](payload)
 
     let res = await req.catch(err => {
       let message
@@ -62,10 +70,18 @@ export default ({ node }) => {
       throw new Error(message)
     })
 
-    // check response code
-    assertOk(res)
+    if (submissionType === `signer`) {
+      dispatch(`displayQr`, {
+        transaction: res.value,
+        to,
+        type
+      })
+    } else {
+      // check response code
+      assertOk(res)
 
-    commit(`setNonce`, (parseInt(state.nonce) + 1).toString())
+      commit(`setNonce`, (parseInt(state.nonce) + 1).toString())
+    }
   }
 
   let actions = {
@@ -73,10 +89,7 @@ export default ({ node }) => {
     // of sending a transaction, so that we can ensure only one send
     // happens at once. otherwise, we might try to send 2 transactions
     // using the same sequence number, which means 1 of them won't be valid.
-    async sendTx(...args) {
-      actions.sendWithSigner(...args)
-      return
-
+    async sendTx(store, payload) {
       // wait to acquire lock
       while (lock != null) {
         // eslint-disable-line no-unmodified-loop-condition
@@ -85,7 +98,28 @@ export default ({ node }) => {
 
       try {
         // send and unlock when done
-        lock = doSend(...args)
+        lock = doSend(store, `direct`, payload)
+        // wait for doSend to finish
+        let res = await lock
+        return res
+      } catch (error) {
+        throw error
+      } finally {
+        // get rid of lock whether doSend throws or succeeds
+        lock = null
+      }
+    },
+    // TODO refactor
+    async signTx(store, payload) {
+      // wait to acquire lock
+      while (lock != null) {
+        // eslint-disable-line no-unmodified-loop-condition
+        await lock
+      }
+
+      try {
+        // send and unlock when done
+        lock = doSend(store, `signer`, payload)
         // wait for doSend to finish
         let res = await lock
         return res
@@ -98,48 +132,6 @@ export default ({ node }) => {
     },
     resetSessionData({ state }) {
       state.nonce = `0`
-    },
-    async sendWithSigner(...args) {
-      let { state, rootState } = args[0]
-      let request = args[1]
-      let requestMetaData = {
-        sequence: state.nonce,
-        name: rootState.user.account,
-        password: rootState.user.password,
-        account_number: rootState.wallet.accountNumber, // TODO move into LCD?
-        chain_id: rootState.connection.lastHeader.chain_id,
-
-        // only build the request and return it
-        generate_only: true
-      }
-      request.base_req = requestMetaData
-
-      // extract type
-      let type = request.type || `send`
-      delete request.type
-
-      // extract "to" address
-      let to = request.to
-      delete request.to
-      request.gas = `50000000`
-
-      // submit to LCD to build, sign, and broadcast
-      let req = to ? node[type](to, request) : node[type](request)
-
-      let res = await req.catch(err => {
-        // TODO
-        throw new Error(err)
-      })
-
-      console.log(res)
-
-      state.qr = {
-        consumer: `cosmos-signer`,
-        type,
-        to,
-        tx: res.value,
-        endpoint: rootState.connection.node.remoteLcdURL + `/broadcast`
-      }
     }
   }
 

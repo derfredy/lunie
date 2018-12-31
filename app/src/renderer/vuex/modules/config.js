@@ -22,7 +22,8 @@ export default () => {
         state: `loading`
       },
       noNodes: { active: false },
-      nodeHalted: { active: false }
+      nodeHalted: { active: false },
+      qr: { active: false }
     }
   }
   const state = JSON.parse(JSON.stringify(emptyState))
@@ -61,6 +62,9 @@ export default () => {
     },
     setModalNodeHalted(state, value) {
       state.modals.nodeHalted.active = value
+    },
+    setModalQr(state, value) {
+      state.modals.qr.active = value
     },
     setActiveMenu(state, value) {
       state.activeMenu = value

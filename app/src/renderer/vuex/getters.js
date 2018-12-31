@@ -26,6 +26,7 @@ export const allTransactions = state =>
   )
 export const wallet = state => state.wallet
 export const send = state => state.send
+export const signerApp = state => state.signerApp
 
 // staking
 export const delegation = state => state.delegation

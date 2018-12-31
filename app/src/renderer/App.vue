@@ -15,7 +15,7 @@
     />
     <modal-node-halted v-if="config.modals.nodeHalted.active" />
     <modal-lcd-approval v-if="approvalRequired" :hash="approvalRequired" />
-    <modal-qr-code v-if="send.qr" />
+    <modal-qr-code v-if="config.modals.qr.active" />
   </div>
 </template>
 

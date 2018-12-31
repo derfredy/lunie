@@ -27,9 +27,9 @@ export default {
   name: `modal-qr-code`,
   components: { VueQr, TmBtn },
   computed: {
-    ...mapGetters([`config`, `nodeURL`, `send`]),
+    ...mapGetters([`config`, `signerApp`]),
     message() {
-      return JSON.stringify(this.send.qr)
+      return JSON.stringify(this.signerApp.message)
     }
   },
   mounted() {
@@ -52,8 +52,7 @@ export default {
   },
   methods: {
     close() {
-      // HACK
-      this.$store.state.send.qr = null
+      this.$store.commit(`setModalQr`, false)
     }
     // storeOnFirebase({ to, tx, endpoint }) {
     //   let docRef = db.collection(`txs`).add({
@@ -86,6 +85,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.tm-modal {
+  flex-direction: column;
 }
 
 .tm-modal-error {

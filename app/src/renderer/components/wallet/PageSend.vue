@@ -93,7 +93,31 @@
         <hr />
       </tm-part>
       <tm-part>
+        <tm-form-group field-id="sign-type" field-label="Sign Via">
+          <tm-field
+            id="send-denomination"
+            v-model="fields.signType"
+            :options="[
+              {
+                key: `Username + Password`,
+                value: `local`
+              },
+              {
+                key: `Cosmos Signer App`,
+                value: `signer`
+              }
+            ]"
+            type="select"
+            placeholder="Select signing method..."
+          />
+          <tm-form-msg
+            v-if="!$v.fields.denom.required"
+            name="Denomination"
+            type="required"
+          />
+        </tm-form-group>
         <tm-form-group
+          v-if="fields.signType === `local`"
           :error="$v.fields.password.$error"
           field-id="password"
           field-label="Account password"
@@ -198,7 +222,8 @@ export default {
       address: ``,
       amount: 0,
       denom: ``,
-      password: ``
+      password: ``,
+      signType: `signer`
     },
     confirmationPending: false,
     sending: false,
@@ -250,27 +275,35 @@ export default {
       let amount = +this.fields.amount
       let address = this.fields.address
       let denom = this.fields.denom
-      try {
-        let type = `send`
-        await this.sendTx({
-          type,
-          password: this.fields.password,
-          to: address,
-          amount: [{ denom, amount: amount.toString() }]
-        })
-        this.sending = false
-        // this.$store.commit(`notify`, {
-        //   title: `Successfully Sent`,
-        //   body: `Successfully sent ${amount} ${denom} to ${address}`
-        // })
+      let type = `send`
+      let payload = {
+        type,
+        password: this.fields.password,
+        to: address,
+        amount: [{ denom, amount: amount.toString() }]
+      }
+      if (this.fields.signType === `local`) {
+        try {
+          await this.sendTx(payload)
+          this.sending = false
+          this.$store.commit(`notify`, {
+            title: `Successfully Sent`,
+            body: `Successfully sent ${amount} ${denom} to ${address}`
+          })
+          // resets send transaction form
+          this.resetForm()
+        } catch (error) {
+          this.sending = false
+          this.$store.commit(`notifyError`, {
+            title: `Error Sending transaction`,
+            body: error.message
+          })
+        }
+      }
+      if (this.fields.signType === `signer`) {
+        await this.signTx(payload)
         // resets send transaction form
         this.resetForm()
-      } catch (error) {
-        this.sending = false
-        this.$store.commit(`notifyError`, {
-          title: `Error Sending transaction`,
-          body: error.message
-        })
       }
     },
     onCancel() {
@@ -286,7 +319,7 @@ export default {
         return false
       }
     },
-    ...mapActions([`sendTx`])
+    ...mapActions([`sendTx`, `signTx`])
   },
   validations() {
     return {
@@ -301,7 +334,7 @@ export default {
           between: between(this.max ? 1 : 0, this.max)
         },
         denom: { required },
-        password: { required }
+        password: { required: this.fields.signType === `local` }
       }
     }
   }
