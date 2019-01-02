@@ -72,6 +72,7 @@ export default ({ node }) => {
 
     if (submissionType === `signer`) {
       dispatch(`displayQr`, {
+        base_req: payload.base_req,
         transaction: res.value,
         to,
         type

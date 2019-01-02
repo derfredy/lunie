@@ -7,13 +7,18 @@ export default ({}) => {
   const mutations = {}
 
   const actions = {
-    displayQr({ state, commit, rootState }, { transaction, to, type }) {
+    displayQr(
+      { state, commit, rootState },
+      { transaction, to, type, base_req }
+    ) {
       state.message = {
         consumer: `cosmos-signer`,
         type,
         to,
+        base_req,
+        address: rootState.wallet.address,
         tx: transaction,
-        endpoint: rootState.connection.node.remoteLcdURL + `/broadcast`
+        endpoint: rootState.connection.node.remoteLcdURL + `/tx/broadcast`
       }
       commit(`setModalQr`, true)
     }
