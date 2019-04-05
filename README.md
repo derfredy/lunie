@@ -27,6 +27,8 @@ npm i -g n && n 10.13.0
 
 Yarn is a JS package manager we use to manage Lunie's dependencies. Download it [here](https://yarnpkg.com/lang/en/docs/install).
 
+On Windows set Yarn to use bash instead of `cmd`: `yarn config set script-shell bash`.
+
 ### Docker
 
 Building Lunie and its dependencies requires [Docker](https://www.docker.com/) installed. You can download it [here](https://www.docker.com/get-docker).
