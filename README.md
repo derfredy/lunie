@@ -70,14 +70,6 @@ yarn build:gaia
 
 The version built is specified in `tasks/build/Gaia/COMMIT.sh` and the programs are placed in the `builds/Gaia` directory.
 
-### Testnets
-
-To connect to a testnet, Lunie needs the configuration files of those networks in the folder `app/networks/{network_name}`. Gaia has a Git repository that holds the configuration files. Lunie has script to download those configurations for you:
-
-```bash
-yarn build:testnets
-```
-
 ### Caddy Proxy
 
 Currently we need a proxy to enable easy local development. We use [Caddy](https://caddyserver.com). To download run:
