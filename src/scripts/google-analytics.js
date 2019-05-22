@@ -3,13 +3,13 @@
 "use strict"
 
 module.exports.enableGoogleAnalytics = function enableGoogleAnalytics(gaUID) {
-  // if set to true disables google analytics
+  // if set to true, disables google analytics
   window[`ga-disable-${gaUID}`] = false
 
   window.ga =
     window.ga ||
-    function() {
-      ;(ga.q = ga.q || []).push(arguments)
+    function () {
+      ; (ga.q = ga.q || []).push(arguments)
     }
   ga.l = +new Date()
   module.exports.anonymize()
