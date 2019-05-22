@@ -12,15 +12,8 @@ body {
 }
 
 #load-container {
-  font:
-    16px/1.5 system,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Roboto",
-    "Seogue UI",
-    "Helvetica Neue",
-    "Lucida Grande",
-    sans-serif;
+  font: 16px/1.5 system, -apple-system, BlinkMacSystemFont, "Roboto",
+    "Seogue UI", "Helvetica Neue", "Lucida Grande", sans-serif;
   margin: 0 auto;
   width: 18rem;
   display: flex;

@@ -64,18 +64,18 @@ export const startApp = async (
     Sentry.init({})
 
     // this will pass the state to Sentry when errors are sent.
-    // this would also sent passwords...
+    // this would also send passwords...
     // Sentry.configureScope(scope => {
     //   scope.setExtra(_Store.state)
     // })
 
     // handle uncaught errors
     /* istanbul ignore next */
-    window.addEventListener(`unhandledrejection`, function(event) {
+    window.addEventListener(`unhandledrejection`, function (event) {
       Sentry.captureException(event.reason)
     })
     /* istanbul ignore next */
-    window.addEventListener(`error`, function(event) {
+    window.addEventListener(`error`, function (event) {
       Sentry.captureException(event.reason)
     })
 
