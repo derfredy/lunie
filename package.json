@@ -150,7 +150,6 @@
     "base": "develop",
     "tasks": {
       "*.{js,vue}": [
-        "prettier --write",
         "jest --bail --coverage --findRelatedTests",
         "git add"
       ],
