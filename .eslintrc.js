@@ -4,9 +4,19 @@ module.exports = {
     node: true
   },
   extends: [
+    // eslint for vue
     "plugin:vue/recommended",
+
+    // resolves stylelint + prettier conflicts
+    "stylelint-prettier/recommended",
+
+    // eslint recommended rules
     "eslint:recommended",
+
+    // vue rules for prettier
     "prettier/vue",
+
+    // resolves eslint + prettier conflicts
     "plugin:prettier/recommended"
   ],
   rules: {
