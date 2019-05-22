@@ -150,7 +150,7 @@
     "base": "develop",
     "tasks": {
       "*.{js,vue}": [
-        "eslint --fix",
+        "prettier --write",
         "jest --bail --coverage --findRelatedTests",
         "git add"
       ],
