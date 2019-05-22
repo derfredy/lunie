@@ -7,9 +7,6 @@ module.exports = {
     // eslint for vue
     "plugin:vue/recommended",
 
-    // resolves stylelint + prettier conflicts
-    "stylelint-prettier/recommended",
-
     // eslint recommended rules
     "eslint:recommended",
 
