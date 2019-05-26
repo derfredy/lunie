@@ -7,7 +7,7 @@
       <div
         id="closeBtn"
         class="action-modal-icon action-modal-close"
-        @click="$emit('close')"
+        @click="$emit('close-action-modal')"
       >
         <i class="material-icons">close</i>
       </div>

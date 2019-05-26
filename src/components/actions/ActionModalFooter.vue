@@ -84,3 +84,21 @@ export default {
   }
 }
 </script>
+
+<style>
+.action-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem 0 1rem;
+}
+
+.action-modal-footer .tm-form-group {
+  padding: 0;
+}
+
+.submission-error {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1rem;
+}
+</style>
