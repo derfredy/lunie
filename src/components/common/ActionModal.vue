@@ -211,14 +211,6 @@ export default {
       type: String,
       required: true
     },
-    simulateFn: {
-      type: Function,
-      required: true
-    },
-    submitFn: {
-      type: Function,
-      required: true
-    },
     validate: {
       type: Function,
       default: undefined
@@ -230,6 +222,14 @@ export default {
     amount: {
       type: [String, Number],
       default: `0`
+    },
+    transactionData: {
+      type: Object,
+      default: {}
+    },
+    notifyMessage: {
+      type: Object,
+      default: {}
     }
   },
   data: () => ({
@@ -361,8 +361,8 @@ export default {
     },
     async simulate() {
       try {
-        const gasEstimate = await this.simulateFn()
-        this.gasEstimate = gasEstimate
+        const { type, ...rest } = this.transactionData
+        const gasEstimate =  await this.$store.dispatch(`simulate${type}`, rest)
         this.step = feeStep
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
@@ -376,16 +376,31 @@ export default {
         await this.connectLedger()
       }
 
+      const { type, memo = null, ...txArguments } = this.transactionData
+
+      const txObj = {
+        txArguments,
+        gas: this.gasEstimate,
+        gas_prices: [
+          {
+            amount: this.gasPrice,
+            denom: this.bondDenom // TODO: should always match staking denom
+          }
+        ],
+        submitType: this.submitType,
+        password: this.password
+      }
+
+      if (memo) {
+        txObj.memo = memo
+      }
+
       try {
-        await this.submitFn(
-          this.gasEstimate,
-          this.gasPrice,
-          this.password,
-          this.selectedSignMethod
-        )
+        const gasEstimate = await this.$store.dispatch(`submit${type}`, txObj)
 
         track(`event`, `successful-submit`, this.title, this.selectedSignMethod)
         this.close()
+        this.$store.commit(`notify`, this.notifyMessage)
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
         track(`event`, `failed-submit`, this.title, message)
@@ -394,6 +409,7 @@ export default {
           this.submissionError = null
         }, 5000)
       }
+
     },
     async connectLedger() {
       try {

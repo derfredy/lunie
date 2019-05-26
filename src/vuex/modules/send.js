@@ -3,6 +3,7 @@ import { signWithPrivateKey } from "scripts/wallet"
 import Cosmos from "@lunie/cosmos-js"
 import Ledger from "scripts/ledger"
 import config from "src/config"
+import { uatoms } from "../../scripts/num.js"
 
 export default ({ node }) => {
   const state = {
@@ -71,6 +72,32 @@ export default ({ node }) => {
         signer
       )
       await included()
+    },
+    async simulateSend({ dispatch }, { txArguments, memo }) {
+      await dispatch(`simulateTx`, {
+        type: `MsgSend`,
+        txArguments,
+        memo
+      })
+    },
+    async submitSend(
+      { dispatch },
+      { txArguments, memo, gas, gas_prices, password, submitType }
+    ) {
+      await dispatch(`sendTx`, {
+        type: `MsgSend`,
+        txArguments,
+        gas: String(gas),
+        gas_prices: [
+          {
+            amount: String(uatoms(gas_prices.amount)),
+            denom: this.gas_prices.denom // TODO: should always match staking denom
+          }
+        ],
+        submitType,
+        password,
+        memo: memo
+      })
     }
   }
 

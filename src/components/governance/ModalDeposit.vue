@@ -2,13 +2,13 @@
   <ActionModal
     id="modal-deposit"
     ref="actionModal"
-    :submit-fn="submitForm"
-    :simulate-fn="simulateForm"
     :validate="validateForm"
     :amount="amount"
     title="Deposit"
     class="modal-deposit"
     submission-error-prefix="Depositing failed"
+    :transaction-data="transactionData"
+    :notify-message="notifyMessage"    
     @close="clear"
   >
     <TmFormGroup
@@ -92,7 +92,27 @@ export default {
         if (balance) return parseFloat(balance.amount)
       }
       return 0
-    }
+    },
+    transactionData() {
+      return {
+        type: `Deposit`,
+        proposal_id: this.proposalId,
+        amount: [
+          {
+            amount: this.amount,
+            denom: this.denom
+          }
+        ]
+      }
+    },
+    notifyMessage() {
+      return {
+        title: `Successful deposit!`,
+        body: `You have successfully deposited your ${num.viewDenom(
+          this.denom
+        )}s on proposal #${this.proposalId}`
+      }
+    }     
   },
   validations() {
     return {
@@ -116,45 +136,6 @@ export default {
       this.$v.$reset()
 
       this.amount = 0
-    },
-    async simulateForm() {
-      return await this.$store.dispatch(`simulateDeposit`, {
-        proposal_id: this.proposalId,
-        amount: [
-          {
-            amount: String(uatoms(this.amount)),
-            denom: this.denom
-          }
-        ]
-      })
-    },
-    async submitForm(gasEstimate, gasPrice, password, submitType) {
-      // TODO: support multiple coins
-      await this.$store.dispatch(`submitDeposit`, {
-        submitType,
-        password,
-        proposal_id: this.proposalId,
-        amount: [
-          {
-            amount: String(uatoms(this.amount)),
-            denom: this.denom
-          }
-        ],
-        gas: String(gasEstimate),
-        gas_prices: [
-          {
-            amount: String(uatoms(gasPrice)),
-            denom: this.bondDenom
-          }
-        ]
-      })
-
-      this.$store.commit(`notify`, {
-        title: `Successful deposit!`,
-        body: `You have successfully deposited your ${num.viewDenom(
-          this.denom
-        )}s on proposal #${this.proposalId}`
-      })
     }
   }
 }

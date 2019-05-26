@@ -2,13 +2,13 @@
   <ActionModal
     id="undelegation-modal"
     ref="actionModal"
-    :submit-fn="submitForm"
-    :simulate-fn="simulateForm"
     :validate="validateForm"
     :amount="0"
     title="Undelegate"
     class="undelegation-modal"
     submission-error-prefix="Undelegating failed"
+    :transaction-data="transactionData"
+    :notify-message="notifyMessage"
     @close="clear"
   >
     <TmFormGroup class="action-modal-form-group">
@@ -112,7 +112,22 @@ export default {
     num
   }),
   computed: {
-    ...mapGetters([`liquidAtoms`])
+    ...mapGetters([`liquidAtoms`]),
+    transactionData() {
+      return {
+        type: `UnbondingDelegation`,
+        amount: this.amount,
+        validator: this.validator
+      }
+    },
+    notifyMessage() {
+      return {
+        title: `Successful undelegation!`,
+        body: `You have successfully undelegated ${this.amount} ${num.viewDenom(
+          this.denom
+        )}s.`
+      }
+    }    
   },
   validations() {
     return {
@@ -136,34 +151,6 @@ export default {
       this.$v.$reset()
 
       this.amount = null
-    },
-    async simulateForm() {
-      return await this.$store.dispatch(`simulateUnbondingDelegation`, {
-        amount: uatoms(this.amount),
-        validator: this.validator
-      })
-    },
-    async submitForm(gasEstimate, gasPrice, password, submitType) {
-      await this.$store.dispatch(`submitUnbondingDelegation`, {
-        amount: uatoms(this.amount),
-        validator: this.validator,
-        gas: String(gasEstimate),
-        gas_prices: [
-          {
-            amount: String(uatoms(gasPrice)),
-            denom: this.denom
-          }
-        ],
-        submitType,
-        password
-      })
-
-      this.$store.commit(`notify`, {
-        title: `Successful undelegation!`,
-        body: `You have successfully undelegated ${this.amount} ${num.viewDenom(
-          this.denom
-        )}s.`
-      })
     }
   }
 }
