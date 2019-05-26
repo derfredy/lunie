@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils"
 import Vuelidate from "vuelidate"
-import SendModal from "src/components/wallet/SendModal"
+import SendModal from "src/components/actions/SendModal"
 
 describe(`SendModal`, () => {
   const localVue = createLocalVue()

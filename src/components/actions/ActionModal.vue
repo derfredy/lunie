@@ -225,11 +225,11 @@ export default {
     },
     transactionData: {
       type: Object,
-      default: {}
+      default: () => {}
     },
     notifyMessage: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   data: () => ({

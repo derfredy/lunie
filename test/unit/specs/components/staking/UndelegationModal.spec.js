@@ -1,7 +1,7 @@
 "use strict"
 
 import { shallowMount, createLocalVue } from "@vue/test-utils"
-import UndelegationModal from "staking/UndelegationModal"
+import UndelegationModal from "src/components/actions/UndelegationModal"
 import Vuelidate from "vuelidate"
 
 describe(`UndelegationModal`, () => {

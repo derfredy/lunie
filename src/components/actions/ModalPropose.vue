@@ -115,7 +115,7 @@ import trim from "lodash.trim"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 
 const isValid = type =>
   type === `Text` || type === `ParameterChange` || type === `SoftwareUpgrade`

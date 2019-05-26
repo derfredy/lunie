@@ -1,15 +1,5 @@
 <template>
-  <ActionModal
-    id="send-modal"
-    ref="actionModal"
-    :validate="validateForm"
-    :amount="amount"
-    title="Send"
-    submission-error-prefix="Sending tokens failed"
-    :transaction-data="transactionData"
-    :notify-message="notifyMessage"
-    @close="clear"
-  >
+  <div>
     <TmFormGroup
       :error="$v.denom.$dirty && $v.denom.$invalid"
       class="action-modal-form-group"
@@ -120,7 +110,7 @@
         :max="max_memo_characters"
       />
     </TmFormGroup>
-  </ActionModal>
+  </div>
 </template>
 
 <script>
@@ -132,7 +122,7 @@ import TmFormGroup from "common/TmFormGroup"
 import TmField from "common/TmField"
 import TmFormMsg from "common/TmFormMsg"
 import TmBtn from "common/TmBtn"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 
 export default {
   name: `send-modal`,
@@ -157,23 +147,6 @@ export default {
     balance() {
       const denom = this.wallet.balances.find(b => b.denom === this.denom)
       return (denom && denom.amount) || 0
-    },
-    transactionData() {
-      return {
-        type: `Send`,
-        toAddress: this.address,
-        denom: this.denom,
-        amount: +this.amount,
-        memo: this.memo
-      }
-    },
-    notifyMessage() {
-      return {
-        title: `Successful redelegation!`,
-        body: `You have successfully redelegated your ${num.viewDenom(
-          this.denom
-        )}s`
-      }
     }
   },
   mounted() {
@@ -182,7 +155,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([`sendTx`, `simulateTx`]),
+    ...mapActions([`sendTx`]),
     open(denom) {
       this.denom = denom
       this.$refs.actionModal.open()
@@ -199,6 +172,58 @@ export default {
       this.amount = 0
       this.editMemo = false
       this.memo = "(Sent via Lunie)"
+    },
+    async simulateForm() {
+      const amount = +this.amount
+      const address = this.address
+      const denom = this.denom
+      const type = `MsgSend`
+
+      return await this.$store.dispatch(`simulateTx`, {
+        type,
+        txArguments: {
+          toAddress: address,
+          amounts: [{ denom, amount: String(uatoms(amount)) }]
+        },
+        memo: this.memo
+      })
+    },
+    async submitForm(gasEstimate, gasPrice, password, submitType) {
+      const amount = +this.amount
+      const address = this.address
+      const denom = this.denom
+      const type = `MsgSend`
+
+      await this.sendTx({
+        type,
+        txArguments: {
+          toAddress: address,
+          amounts: [{ denom, amount: String(uatoms(amount)) }]
+        },
+        gas: String(gasEstimate),
+        gas_prices: [
+          {
+            amount: String(uatoms(gasPrice)),
+            denom: this.denom // TODO: should always match staking denom
+          }
+        ],
+        submitType,
+        password,
+        memo: this.memo
+      })
+
+      const fees = gasEstimate * gasPrice
+      this.$store.commit("updateWalletBalance", {
+        amount: this.balance - uatoms(amount + fees),
+        denom: this.denom
+      })
+
+      this.$store.commit(`notify`, {
+        title: `Successful Send`,
+        body: `Successfully sent ${amount} ${num.viewDenom(
+          denom
+        )}s to ${address}`
+      })
     },
     bech32Validate(param) {
       try {

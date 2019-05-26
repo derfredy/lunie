@@ -1,40 +1,31 @@
 <template>
-  <ActionModal
+  <TransactionModal
     id="modal-withdraw-rewards"
-    ref="actionModal"
+    ref="TransactionModal"
+    :submit-fn="submitForm"
+    :simulate-fn="simulateForm"
     title="Withdraw"
     class="modal-withdraw-rewards"
     submission-error-prefix="Withdrawal failed"
-    :transaction-data="transactionData"
-    :notify-message="notifyMessage"        
   >
-    <TmFormGroup
-      class="action-modal-form-group"
-      field-id="amount"
-      field-label="Amount"
-    >
-      <span class="input-suffix">{{ denom | viewDenom }}</span>
-      <TmField id="amount" :value="rewards | atoms | fullDecimals" readonly />
-    </TmFormGroup>
-    <span v-if="!validatorAddress" class="form-message withdraw-limit">
-      Note: Lunie will withdraw only the top 5 rewards in a single transaction
-      due to a limitation in the Ledger Nano S.
-    </span>
-  </ActionModal>
+    <WithdrawAction />
+  </TransactionModal>
 </template>
 
 <script>
 import { viewDenom, atoms, fullDecimals } from "../../scripts/num.js"
-import ActionModal from "common/ActionModal"
+import TransactionModal from "../actions/TransactionModal"
+import WithdrawAction from "./WithdrawAction"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 
 export default {
   name: `modal-withdraw-rewards`,
   components: {
-    ActionModal,
+    TransactionModal,
     TmField,
-    TmFormGroup
+    TmFormGroup,
+    WithdrawAction
   },
   filters: {
     atoms,
@@ -56,24 +47,27 @@ export default {
       required: true
     }
   },
-  computed: {
-    transactionData() {
-      return {
-        type: `WithdrawAllRewards`,
-        denom: this.denom,
-        validatorAddress: this.validatorAddress,
-      }
-    },
-    notifyMessage() {
-      return {
-        title: `Successful withdrawal!`,
-        body: `You have successfully withdrawn your rewards.`
-      }
-    }   
-  },
   methods: {
     open() {
-      this.$refs.actionModal.open()
+      this.$refs.TransactionModal.open()
+    },
+    async simulateForm() {
+      return await this.$store.dispatch(`simulateWithdrawAllRewards`)
+    },
+    async submitForm(gasEstimate, gasPrice, password, submitType) {
+      await this.$store.dispatch(`withdrawAllRewards`, {
+        gas: gasEstimate,
+        gasPrice,
+        denom: this.denom,
+        validatorAddress: this.validatorAddress,
+        password,
+        submitType
+      })
+
+      this.$store.commit(`notify`, {
+        title: `Successful withdrawal!`,
+        body: `You have successfully withdrawn your rewards.`
+      })
     }
   }
 }

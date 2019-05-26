@@ -86,7 +86,7 @@ import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 
 export default {
   name: `delegation-modal`,

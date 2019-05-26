@@ -53,7 +53,7 @@ import { between, decimal } from "vuelidate/lib/validators"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 
 export default {
   name: `modal-deposit`,

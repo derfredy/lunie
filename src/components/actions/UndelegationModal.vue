@@ -75,7 +75,7 @@
 import { mapGetters } from "vuex"
 import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
 import { between, decimal } from "vuelidate/lib/validators"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"

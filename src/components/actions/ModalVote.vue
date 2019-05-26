@@ -60,7 +60,7 @@
 import { mapGetters } from "vuex"
 import { required } from "vuelidate/lib/validators"
 import { uatoms } from "../../scripts/num.js"
-import ActionModal from "common/ActionModal"
+import ActionModal from "./ActionModal"
 import TmBtn from "common/TmBtn"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"

@@ -1,7 +1,7 @@
 "use strict"
 
 import { shallowMount } from "@vue/test-utils"
-import ModalWithdrawRewards from "staking/ModalWithdrawRewards"
+import ModalWithdrawRewards from "actions/ModalWithdrawRewards"
 
 describe(`ModalWithdrawRewards`, () => {
   let wrapper, $store, propsData
