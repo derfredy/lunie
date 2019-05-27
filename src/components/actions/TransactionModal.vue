@@ -1,7 +1,13 @@
 <template>
   <transition v-if="show" name="slide-fade">
     <SignInRequired class="action-modal">
-      <div slot="action-modal-content" v-focus-last class="action-modal" tabindex="0" @keyup.esc="close">
+      <div
+        slot="action-modal-content"
+        v-focus-last
+        class="action-modal"
+        tabindex="0"
+        @keyup.esc="close"
+      >
         <ActionModalHeader
           :title="title"
           :requires-sign-in="requiresSignIn"
@@ -9,12 +15,9 @@
           :step="step"
           @:close="close"
         />
-        <component
-          :is="actions.testy"
-          v-bind="{balance, }"
-        />
+        <component :is="actions.testy" v-bind="{ balance }" />
         <div v-if="step === `details`" class="action-modal-form">
-          <slot name="action"/>
+          <slot name="action" />
         </div>
         <ActionFees
           v-else-if="step === `fees`"
@@ -22,14 +25,14 @@
           :step="step"
           :amount="amount"
           :balance="balance"
-          :gasPrice="gasPrice"
-          :gasEstimate="gasEstimate"
+          :gas-price="gasPrice"
+          :gas-estimate="gasEstimate"
         />
         <SignStep
           v-else-if="step === `sign`"
           class="action-modal-form"
           :session="session"
-          :signMethods="signMethods"
+          :sign-methods="signMethods"
           :selected-sign-method="selectedSignMethod"
           :sending="sending"
           @on-change-password="onChangePassword"
@@ -54,7 +57,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import Vue from "vue"
 import HardwareState from "common/TmHardwareState"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
@@ -79,8 +82,8 @@ const signStep = `sign`
 const signWithLedger = `ledger`
 const signWithLocalKeystore = `local`
 
-Vue.component('tabarchive', { 
-	template: '<div>Archive component</div>' 
+Vue.component("tabarchive", {
+  template: "<div>Archive component</div>"
 })
 
 export default {
@@ -95,7 +98,7 @@ export default {
     TmField,
     TmFormGroup,
     TmFormMsg,
-    testComp,
+    testComp
   },
   props: {
     action: {
@@ -142,7 +145,7 @@ export default {
     uatoms,
     viewDenom,
     actions: {
-      testy: 'testComp'
+      testy: "testComp"
     }
   }),
   computed: {
@@ -215,7 +218,7 @@ export default {
       this.$emit(`close`)
     },
     onChangePassword(newPassword) {
-      console.log('password change', newPassword)
+      console.log("password change", newPassword)
       this.password = newPassword
     },
     goToSession() {

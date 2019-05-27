@@ -16,15 +16,11 @@
 import { viewDenom, atoms, fullDecimals } from "../../scripts/num.js"
 import TransactionModal from "../actions/TransactionModal"
 import WithdrawAction from "./WithdrawAction"
-import TmField from "common/TmField"
-import TmFormGroup from "common/TmFormGroup"
 
 export default {
   name: `modal-withdraw-rewards`,
   components: {
     TransactionModal,
-    TmField,
-    TmFormGroup,
     WithdrawAction
   },
   filters: {

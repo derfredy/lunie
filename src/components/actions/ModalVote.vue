@@ -7,7 +7,7 @@
     class="modal-vote"
     submission-error-prefix="Voting failed"
     :transaction-data="transactionData"
-    :notify-message="notifyMessage"    
+    :notify-message="notifyMessage"
     @close="clear"
   >
     <TmFormGroup class="action-modal-group vote-options">
@@ -59,7 +59,6 @@
 <script>
 import { mapGetters } from "vuex"
 import { required } from "vuelidate/lib/validators"
-import { uatoms } from "../../scripts/num.js"
 import ActionModal from "./ActionModal"
 import TmBtn from "common/TmBtn"
 import TmFormGroup from "common/TmFormGroup"
@@ -112,7 +111,7 @@ export default {
           this.proposalId
         }`
       }
-    } 
+    }
   },
   validations() {
     return {

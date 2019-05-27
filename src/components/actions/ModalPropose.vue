@@ -7,7 +7,7 @@
     title="Proposal"
     submission-error-prefix="Submitting proposal failed"
     :transaction-data="transactionData"
-    :notify-message="notifyMessage"    
+    :notify-message="notifyMessage"
     @close="clear"
   >
     <TmFormGroup
@@ -109,7 +109,7 @@ import {
   between,
   decimal
 } from "vuelidate/lib/validators"
-import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
+import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import isEmpty from "lodash.isempty"
 import trim from "lodash.trim"
 import TmField from "common/TmField"
@@ -162,7 +162,6 @@ export default {
         type: `Proposal`,
         title: this.title,
         description: this.description,
-        type: this.type,
         initial_deposit: [
           {
             denom: this.denom,
@@ -176,7 +175,7 @@ export default {
         title: `Successful proposal submission!`,
         body: `You have successfully submitted a new ${this.type.toLowerCase()} proposal`
       }
-    }       
+    }
   },
   validations() {
     return {

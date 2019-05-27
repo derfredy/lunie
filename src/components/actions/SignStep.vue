@@ -56,17 +56,25 @@
 
 <script>
 const signWithLocalKeystore = `local`
-import HardwareState from '../common/TmHardwareState'
-import TmFormGroup from '../common/TmFormGroup'
-import TmField from '../common/TmField'
-import TmFormMsg from '../common/TmFormMsg'
+const signStep = `sign`
+
+import { requiredIf } from "vuelidate/lib/validators"
+import HardwareState from "../common/TmHardwareState"
+import TmFormMsg from "../common/TmFormMsg"
 
 export default {
   name: `action-sign-step`,
   components: {
-    HardwareState
+    HardwareState,
+    TmFormMsg
   },
-  props: [`signMethods`, `selected-sign-method`, `session`, `sending`, `password-change`],
+  props: [
+    `signMethods`,
+    `selected-sign-method`,
+    `session`,
+    `sending`,
+    `password-change`
+  ],
   data: () => ({
     password: null
   }),
@@ -83,7 +91,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

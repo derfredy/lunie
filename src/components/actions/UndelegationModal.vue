@@ -73,7 +73,7 @@
 
 <script>
 import { mapGetters } from "vuex"
-import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
+import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import { between, decimal } from "vuelidate/lib/validators"
 import ActionModal from "./ActionModal"
 import TmField from "common/TmField"
@@ -127,7 +127,7 @@ export default {
           this.denom
         )}s.`
       }
-    }    
+    }
   },
   validations() {
     return {

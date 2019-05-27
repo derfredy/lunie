@@ -6,7 +6,7 @@
     class="modal-withdraw-rewards"
     submission-error-prefix="Withdrawal failed"
     :transaction-data="transactionData"
-    :notify-message="notifyMessage"        
+    :notify-message="notifyMessage"
   >
     <TmFormGroup
       class="action-modal-form-group"
@@ -61,7 +61,7 @@ export default {
       return {
         type: `WithdrawAllRewards`,
         denom: this.denom,
-        validatorAddress: this.validatorAddress,
+        validatorAddress: this.validatorAddress
       }
     },
     notifyMessage() {
@@ -69,7 +69,7 @@ export default {
         title: `Successful withdrawal!`,
         body: `You have successfully withdrawn your rewards.`
       }
-    }   
+    }
   },
   methods: {
     open() {

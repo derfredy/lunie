@@ -126,7 +126,7 @@
 <script>
 import b32 from "scripts/b32"
 import { required, between, decimal, maxLength } from "vuelidate/lib/validators"
-import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
+import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import { mapActions, mapGetters } from "vuex"
 import TmFormGroup from "common/TmFormGroup"
 import TmField from "common/TmField"

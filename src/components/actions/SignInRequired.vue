@@ -21,15 +21,13 @@ import ActionModalHeader from "./ActionModalHeader"
 import ActionModalFooter from "./ActionModalFooter"
 
 export default {
-  name: "action-requires-sign-in",
+  name: "ActionRequiresSignIn",
   components: {
     ActionModalHeader,
     ActionModalFooter
   },
   computed: {
-    ...mapGetters([
-      `session`,
-    ])
+    ...mapGetters([`session`])
   }
 }
 </script>

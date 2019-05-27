@@ -8,7 +8,7 @@
     class="modal-deposit"
     submission-error-prefix="Depositing failed"
     :transaction-data="transactionData"
-    :notify-message="notifyMessage"    
+    :notify-message="notifyMessage"
     @close="clear"
   >
     <TmFormGroup
@@ -48,7 +48,7 @@
 
 <script>
 import { mapGetters } from "vuex"
-import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
+import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import { between, decimal } from "vuelidate/lib/validators"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
@@ -112,7 +112,7 @@ export default {
           this.denom
         )}s on proposal #${this.proposalId}`
       }
-    }     
+    }
   },
   validations() {
     return {

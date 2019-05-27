@@ -28,6 +28,7 @@ import TmFormMsg from "../common/TmFormMsg"
 import { atoms } from "../../scripts/num"
 import { between, requiredIf } from "vuelidate/lib/validators"
 
+const feeStep = `fees`
 
 export default {
   name: `action-fees`,
@@ -51,7 +52,7 @@ export default {
         between: between(0, atoms(this.balance))
       }
     }
-  }  
+  }
 }
 </script>
 

@@ -82,7 +82,7 @@
 <script>
 import { mapGetters } from "vuex"
 import { between, decimal } from "vuelidate/lib/validators"
-import num, { uatoms, atoms, SMALLEST } from "../../scripts/num.js"
+import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
@@ -152,7 +152,7 @@ export default {
     },
     notifyMessage() {
       if (this.from === this.session.address) {
-        return {          
+        return {
           title: `Successful delegation!`,
           body: `You have successfully delegated your ${num.viewDenom(
             this.denom
@@ -166,7 +166,7 @@ export default {
           )}s`
         }
       }
-    }    
+    }
   },
   methods: {
     open() {

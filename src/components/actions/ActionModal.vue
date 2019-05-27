@@ -20,14 +20,14 @@
         :step="step"
         :amount="amount"
         :balance="balance"
-        :gasPrice="gasPrice"
-        :gasEstimate="gasEstimate"
+        :gas-price="gasPrice"
+        :gas-estimate="gasEstimate"
       />
       <SignStep
         v-else-if="step === `sign`"
         class="action-modal-form"
         :session="session"
-        :signMethods="signMethods"
+        :sign-methods="signMethods"
         :selected-sign-method="selectedSignMethod"
         :sending="sending"
         @on-change-password="onChangePassword"
@@ -49,17 +49,10 @@
 </template>
 
 <script>
-import HardwareState from "common/TmHardwareState"
-import TmBtn from "common/TmBtn"
-import TmField from "common/TmField"
-import TmFormGroup from "common/TmFormGroup"
-import TmFormMsg from "common/TmFormMsg"
-import TableInvoice from "common/TableInvoice"
 import ActionModalHeader from "./ActionModalHeader"
 import ActionModalFooter from "./ActionModalFooter"
 import ActionFees from "./ActionFees"
 import SignStep from "./SignStep"
-import Steps from "common/Steps"
 import { mapGetters } from "vuex"
 import { uatoms, atoms, viewDenom } from "../../scripts/num.js"
 import { between, requiredIf } from "vuelidate/lib/validators"
@@ -76,13 +69,6 @@ const signWithLocalKeystore = `local`
 export default {
   name: `action-modal`,
   components: {
-    HardwareState,
-    TmBtn,
-    TmField,
-    TmFormGroup,
-    TmFormMsg,
-    TableInvoice,
-    Steps,
     ActionModalHeader,
     ActionModalFooter,
     ActionFees,
@@ -245,7 +231,7 @@ export default {
     async simulate() {
       try {
         const { type, ...rest } = this.transactionData
-        const gasEstimate =  await this.$store.dispatch(`simulate${type}`, rest)
+        await this.$store.dispatch(`simulate${type}`, rest)
         this.step = feeStep
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
@@ -279,7 +265,7 @@ export default {
       }
 
       try {
-        const gasEstimate = await this.$store.dispatch(`submit${type}`, txObj)
+        await this.$store.dispatch(`submit${type}`, txObj)
 
         track(`event`, `successful-submit`, this.title, this.selectedSignMethod)
         this.close()
@@ -292,7 +278,6 @@ export default {
           this.submissionError = null
         }, 5000)
       }
-
     },
     async connectLedger() {
       try {
