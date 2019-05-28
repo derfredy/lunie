@@ -6,7 +6,7 @@
         :requires-sign-in="requiresSignIn"
         :steps="steps"
         :step="step"
-        @:close-action-modal="close"
+        @close-action-modal="close"
       />
       <div v-if="requiresSignIn" class="action-modal-form">
         <p>You need to sign in to submit a transaction.</p>
