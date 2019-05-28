@@ -145,8 +145,8 @@ import num from "scripts/num"
 import TmBtn from "common/TmBtn"
 import TmDataError from "common/TmDataError"
 import TextBlock from "common/TextBlock"
-import ModalDeposit from "../actions/ModalDeposit"
-import ModalVote from "../actions/ModalVote"
+import ModalDeposit from "../ActionModal/ModalDeposit"
+import ModalVote from "../ActionModal/ModalVote"
 import TmPage from "common/TmPage"
 export default {
   name: `page-proposal`,

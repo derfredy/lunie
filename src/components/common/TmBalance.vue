@@ -39,7 +39,7 @@
 import num from "scripts/num"
 import ShortBech32 from "common/ShortBech32"
 import TmBtn from "common/TmBtn"
-import ModalWithdrawRewards from "../actions/ModalWithdrawRewards"
+import ModalWithdrawRewards from "../ActionModal/ModalWithdrawRewards"
 import { mapGetters } from "vuex"
 export default {
   name: `tm-balance`,

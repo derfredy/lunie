@@ -160,7 +160,7 @@ export default {
     },
     transactionData() {
       return {
-        type: `Send`,
+        type: `MsgSend`,
         toAddress: this.address,
         denom: this.denom,
         amount: +this.amount,

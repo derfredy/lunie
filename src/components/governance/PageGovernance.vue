@@ -17,7 +17,7 @@
 <script>
 import { mapGetters } from "vuex"
 import PerfectScrollbar from "perfect-scrollbar"
-import ModalPropose from "../actions/ModalPropose"
+import ModalPropose from "../ActionModal/ModalPropose"
 import TmBtn from "common/TmBtn"
 import TmPage from "common/TmPage"
 

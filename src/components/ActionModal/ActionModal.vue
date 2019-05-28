@@ -59,6 +59,9 @@ import { between, requiredIf } from "vuelidate/lib/validators"
 import { track } from "scripts/google-analytics.js"
 import config from "src/config"
 
+import ActionController from "./controller/ActionController.js"
+const actionController = new ActionController()
+
 const defaultStep = `details`
 const feeStep = `fees`
 const signStep = `sign`
@@ -184,6 +187,10 @@ export default {
       this.$v.$reset()
       this.$emit(`close`)
     },
+    onChangePassword(newPassword) {
+      console.log("password change", newPassword)
+      this.password = newPassword
+    },
     goToSession() {
       this.close()
 
@@ -230,8 +237,8 @@ export default {
     },
     async simulate() {
       try {
-        const { type, ...rest } = this.transactionData
-        await this.$store.dispatch(`simulate${type}`, rest)
+        const { type, ...properties } = this.transactionData
+        this.gasEstimate = await actionController.simulate(type, properties)
         this.step = feeStep
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
@@ -245,30 +252,24 @@ export default {
         await this.connectLedger()
       }
 
-      const { type, memo = null, ...txArguments } = this.transactionData
+      const { type, ...properties } = this.transactionData
 
-      const txObj = {
-        txArguments,
-        gas: this.gasEstimate,
-        gas_prices: [
-          {
-            amount: this.gasPrice,
-            denom: this.bondDenom // TODO: should always match staking denom
-          }
-        ],
-        submitType: this.submitType,
-        password: this.password
+      const gasPrice = {
+        amount: this.gasPrice,
+        denom: this.bondDenom
       }
-
-      if (memo) {
-        txObj.memo = memo
-      }
-
+      console.log(gasPrice)
       try {
-        await this.$store.dispatch(`submit${type}`, txObj)
-
+        await actionController.send(
+          type,
+          properties,
+          this.gasEstimate,
+          gasPrice,
+          this.selectedSignMethod,
+          this.password
+        )
         track(`event`, `successful-submit`, this.title, this.selectedSignMethod)
-        this.close()
+        // this.close()
         this.$store.commit(`notify`, this.notifyMessage)
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`

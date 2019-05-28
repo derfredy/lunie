@@ -178,6 +178,7 @@ export default {
       return !this.$v.$invalid
     },
     clear() {
+      console.log(`clear`)
       this.$v.$reset()
 
       this.selectedIndex = 0

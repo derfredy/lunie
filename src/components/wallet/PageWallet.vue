@@ -39,7 +39,7 @@ import num from "scripts/num"
 import { mapGetters, mapActions } from "vuex"
 import orderBy from "lodash.orderby"
 import LiCoin from "./LiCoin"
-import SendModal from "../actions/SendModal"
+import SendModal from "../ActionModal/SendModal"
 import TmPage from "common/TmPage"
 import TmDataMsg from "common/TmDataMsg"
 
