@@ -160,7 +160,7 @@ export default {
     },
     transactionData() {
       return {
-        type: transaciton.PROPOSE,
+        type: transaction.PROPOSE,
         title: this.title,
         description: this.description,
         initial_deposit: [

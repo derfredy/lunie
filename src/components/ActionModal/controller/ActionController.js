@@ -46,7 +46,12 @@ class ActionController {
       )
     }
 
-    const message = createMessage(cosmos, type, this.senderAddress, txArguments)
+    const message = createMessage(
+      this.cosmos,
+      type,
+      this.senderAddress,
+      txArguments
+    )
     const gasEstimate = await message.simulate({
       memo: transactionProperties.memo
     })
@@ -79,13 +84,18 @@ class ActionController {
     let message
     if (type === transaction.WITHDRAW) {
       message = createMultiMessage(
-        cosmos,
+        this.cosmos,
         type,
         this.senderAddress,
         txArguments
       )
     } else {
-      message = createMessage(cosmos, type, this.senderAddress, txArguments)
+      message = createMessage(
+        this.cosmos,
+        type,
+        this.senderAddress,
+        txArguments
+      )
     }
 
     const { included } = await message.send(
