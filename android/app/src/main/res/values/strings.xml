@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lunie</string>
+    <string name="title_activity_main">Lunie</string>
+    <string name="package_name">com.lunie.lunie</string>
+    <string name="fileprovider_authority">com.lunie.lunie.fileprovider</string>
+    <string name="custom_url_scheme">com.lunie.lunie</string>
+</resources>
