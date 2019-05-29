@@ -28,7 +28,7 @@ class ActionController {
     this.senderAddress = senderAddress
     this.context = context
     this.connected = () => true
-
+    this.cosmos = new Cosmos(this.url, this.chainId)
     console.log(JSON.stringify(this.context, null, 2))
   }
 
@@ -46,7 +46,6 @@ class ActionController {
       )
     }
 
-    const cosmos = new Cosmos(this.url, this.chainId)
     const message = createMessage(cosmos, type, this.senderAddress, txArguments)
     const gasEstimate = await message.simulate({
       memo: transactionProperties.memo
@@ -78,7 +77,6 @@ class ActionController {
     const signer = getSigner(config, submitType, { localKeyPairName, password })
 
     let message
-    const cosmos = new Cosmos(this.url, this.chainId)
     if (type === transaction.WITHDRAW) {
       message = createMultiMessage(
         cosmos,
