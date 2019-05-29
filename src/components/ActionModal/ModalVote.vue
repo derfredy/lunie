@@ -63,6 +63,7 @@ import ActionModal from "./ActionModal"
 import TmBtn from "common/TmBtn"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
+import { transaction } from "./controller/transacitonType"
 
 const isValid = option =>
   option === `Yes` ||
@@ -99,7 +100,7 @@ export default {
     ...mapGetters([`bondDenom`]),
     transactionData() {
       return {
-        type: `Vote`,
+        type: transaction.VOTE,
         proposal_id: this.proposalId,
         option: this.vote
       }

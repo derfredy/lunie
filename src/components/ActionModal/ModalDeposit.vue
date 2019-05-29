@@ -54,6 +54,7 @@ import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
 import ActionModal from "./ActionModal"
+import { transaction } from "./controller/transacitonType"
 
 export default {
   name: `modal-deposit`,
@@ -95,7 +96,7 @@ export default {
     },
     transactionData() {
       return {
-        type: `Deposit`,
+        type: transaction.DEPOSIT,
         proposal_id: this.proposalId,
         amount: [
           {

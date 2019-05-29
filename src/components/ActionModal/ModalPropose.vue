@@ -116,6 +116,7 @@ import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
 import ActionModal from "./ActionModal"
+import { transaction } from "./controller/transacitonType"
 
 const isValid = type =>
   type === `Text` || type === `ParameterChange` || type === `SoftwareUpgrade`
@@ -159,7 +160,7 @@ export default {
     },
     transactionData() {
       return {
-        type: `Proposal`,
+        type: transaciton.PROPOSE,
         title: this.title,
         description: this.description,
         initial_deposit: [

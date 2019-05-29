@@ -133,6 +133,7 @@ import TmField from "common/TmField"
 import TmFormMsg from "common/TmFormMsg"
 import TmBtn from "common/TmBtn"
 import ActionModal from "./ActionModal"
+import { transaction } from "./controller/transacitonType"
 
 export default {
   name: `send-modal`,
@@ -160,7 +161,7 @@ export default {
     },
     transactionData() {
       return {
-        type: `MsgSend`,
+        type: transaction.SEND,
         toAddress: this.address,
         denom: this.denom,
         amount: +this.amount,

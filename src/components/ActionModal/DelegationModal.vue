@@ -87,6 +87,7 @@ import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
 import ActionModal from "./ActionModal"
+import { transaction } from "./controller/transacitonType"
 
 export default {
   name: `delegation-modal`,
@@ -134,7 +135,7 @@ export default {
     transactionData() {
       if (this.from === this.session.address) {
         return {
-          type: `Delegation`,
+          type: transaction.DELEGATE,
           validator_address: this.validator.operator_address,
           amount: this.amount
         }
@@ -143,7 +144,7 @@ export default {
           v => this.from === v.operator_address
         )
         return {
-          type: `Redelegation`,
+          type: transaction.REDELEGATE,
           validatorSrc,
           validatorDst: this.validator,
           amount: this.amount
