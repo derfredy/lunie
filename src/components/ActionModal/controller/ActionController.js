@@ -28,6 +28,8 @@ class ActionController {
     this.senderAddress = senderAddress
     this.context = context
     this.connected = () => true
+
+    console.log(JSON.stringify(this.context, null, 2))
   }
 
   async simulate(type, transactionProperties) {

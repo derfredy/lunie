@@ -7,6 +7,7 @@
     submission-error-prefix="Withdrawal failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
+    :context="context"
   >
     <TmFormGroup
       class="action-modal-form-group"
@@ -55,6 +56,11 @@ export default {
     denom: {
       type: String,
       required: true
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   computed: {

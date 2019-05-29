@@ -60,7 +60,7 @@ import { track } from "scripts/google-analytics.js"
 import config from "src/config"
 
 import ActionController from "./controller/ActionController.js"
-const actionController = new ActionController()
+let actionController
 
 const defaultStep = `details`
 const feeStep = `fees`
@@ -101,6 +101,11 @@ export default {
     notifyMessage: {
       type: Object,
       default: () => {}
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   data: () => ({
@@ -118,6 +123,9 @@ export default {
     uatoms,
     viewDenom
   }),
+  mounted: function() {
+    actionController = new ActionController(this.context)
+  },
   computed: {
     ...mapGetters([
       `connected`,

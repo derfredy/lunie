@@ -32,6 +32,7 @@
       ref="ModalWithdrawRewards"
       :rewards="totalRewards"
       :denom="bondDenom"
+      :context="modalContext"
     />
   </div>
 </template>
@@ -90,6 +91,14 @@ export default {
       return this.num.shortDecimals(
         this.num.atoms(rewards && rewards > 10 ? rewards : 0)
       )
+    },
+    modalContext() {
+      return {
+        session: this.session,
+        denom: this.bondDenom,
+        totalRewards: this.totalRewards,
+        availableAtoms: this.liquidAtoms
+      }
     }
   },
   watch: {
