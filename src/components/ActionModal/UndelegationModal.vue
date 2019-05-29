@@ -79,7 +79,7 @@ import ActionModal from "./ActionModal"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
-import { transaction } from "./controller/transacitonType"
+import transaction from "./controller/transactionTypes"
 
 export default {
   name: `undelegation-modal`,
@@ -116,7 +116,7 @@ export default {
     ...mapGetters([`liquidAtoms`]),
     transactionData() {
       return {
-        type: transaction.UNDELEGATE
+        type: transaction.UNDELEGATE,
         amount: this.amount,
         validator: this.validator
       }

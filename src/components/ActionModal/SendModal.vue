@@ -133,7 +133,7 @@ import TmField from "common/TmField"
 import TmFormMsg from "common/TmFormMsg"
 import TmBtn from "common/TmBtn"
 import ActionModal from "./ActionModal"
-import { transaction } from "./controller/transacitonType"
+import transaction from "./controller/transactionTypes"
 
 export default {
   name: `send-modal`,

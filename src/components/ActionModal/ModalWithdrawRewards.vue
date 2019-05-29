@@ -28,7 +28,7 @@ import { viewDenom, atoms, fullDecimals } from "../../scripts/num.js"
 import ActionModal from "./ActionModal"
 import TmField from "common/TmField"
 import TmFormGroup from "common/TmFormGroup"
-import { transaction } from "./controller/transacitonType"
+import transaction from "./controller/transactionTypes"
 
 export default {
   name: `modal-withdraw-rewards`,

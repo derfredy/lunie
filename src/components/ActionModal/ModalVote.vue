@@ -63,7 +63,7 @@ import ActionModal from "./ActionModal"
 import TmBtn from "common/TmBtn"
 import TmFormGroup from "common/TmFormGroup"
 import TmFormMsg from "common/TmFormMsg"
-import { transaction } from "./controller/transacitonType"
+import transaction from "./controller/transactionTypes"
 
 const isValid = option =>
   option === `Yes` ||
