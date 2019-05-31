@@ -11,11 +11,9 @@ import {
 } from "./messageHelpers.js"
 
 class ActionController {
-  constructor(context) {
+  setContext(context) {
     this.context = context
-    this.cosmos = new Cosmos(
-      this.context.connection.externals.node.nodeUrl,
-      this.context.connection.lastHeader.chain_id)
+    this.cosmos = new Cosmos(context.url, context.chainId)
   }
 
   async simulate(type, transactionProperties) {

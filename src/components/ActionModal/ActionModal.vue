@@ -124,7 +124,10 @@ export default {
     viewDenom
   }),
   mounted: function() {
-    actionController = new ActionController(this.context)
+    actionController = new ActionController()
+  },
+  updated: function() {
+    actionController.setContext(this.context)
   },
   computed: {
     ...mapGetters([
