@@ -10,26 +10,12 @@ import {
   convertGasPriceData
 } from "./messageHelpers.js"
 
-const URL = "https://stargate.lunie.io" //config.stargate
-const CHAIN_ID = "cosmoshub-2" // TODO get from context
-const ORIGIN_ADDRESS = "" // TODO get from context
-
-// Need to provide a context object that contains relevant information
-// like validator lists, available atoms etc.
 class ActionController {
-  constructor(
-    context = {},
-    url = URL,
-    chainId = CHAIN_ID,
-    senderAddress = ORIGIN_ADDRESS
-  ) {
-    this.url = url
-    this.chainId = chainId
-    this.senderAddress = senderAddress
+  constructor(context) {
     this.context = context
-    this.connected = () => true
-    this.cosmos = new Cosmos(this.url, this.chainId)
-    console.log(JSON.stringify(this.context, null, 2))
+    this.cosmos = new Cosmos(
+      this.context.connection.externals.node.nodeUrl,
+      this.context.connection.lastHeader.chain_id)
   }
 
   async simulate(type, transactionProperties) {
@@ -49,7 +35,7 @@ class ActionController {
     const message = createMessage(
       this.cosmos,
       type,
-      this.senderAddress,
+      this.context.session.address,
       txArguments
     )
     const gasEstimate = await message.simulate({
@@ -78,7 +64,7 @@ class ActionController {
       )
     }
 
-    const localKeyPairName = "" // TODO
+    const localKeyPairName = this.context.session.localKeyPairName
     const signer = getSigner(config, submitType, { localKeyPairName, password })
 
     let message
@@ -86,14 +72,14 @@ class ActionController {
       message = createMultiMessage(
         this.cosmos,
         type,
-        this.senderAddress,
+        this.context.session.address,
         txArguments
       )
     } else {
       message = createMessage(
         this.cosmos,
         type,
-        this.senderAddress,
+        this.context.session.address,
         txArguments
       )
     }

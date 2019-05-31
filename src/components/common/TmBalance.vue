@@ -65,7 +65,8 @@ export default {
       `lastHeader`,
       `totalAtoms`,
       `bondDenom`,
-      `distribution`
+      `distribution`,
+      `modalContext`
     ]),
     loaded() {
       return this.wallet.loaded && this.delegation.loaded
@@ -92,14 +93,6 @@ export default {
         this.num.atoms(rewards && rewards > 10 ? rewards : 0)
       )
     },
-    modalContext() {
-      return {
-        session: this.session,
-        denom: this.bondDenom,
-        totalRewards: this.totalRewards,
-        availableAtoms: this.liquidAtoms
-      }
-    }
   },
   watch: {
     lastHeader: {
