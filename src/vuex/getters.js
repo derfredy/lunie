@@ -108,12 +108,15 @@ export const nodeUrl = state =>
 export const blocks = state => (state.blocks ? state.blocks.blocks : [])
 export const block = state => (state.blocks ? state.blocks.block : [])
 
-export const modalContext = state => {
-  return {
-    connection: state.connection,
+export const modalContext = (state, getters) => {
+  const r = {
+    url: state.connection.externals.node.url,
+    chainId: state.connection.lastHeader.chain_id,
     session: state.session,
-    denom: state.bondDenom,
-    totalRewards: state.distribution.totalRewards[state.bondDenom],
-    availableAtoms: state.liquidAtoms
+    denom: getters.bondDenom,
+    totalRewards: state.distribution.totalRewards.uatom,
+    availableAtoms: getters.liquidAtoms
   }
+  console.log(`modalContext`, r)
+  return r
 }
