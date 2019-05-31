@@ -51,7 +51,7 @@ export default {
     validatorAddress: {
       type: String,
       required: false,
-      default: null
+      default: ""
     },
     context: {
       type: Object,
@@ -63,7 +63,7 @@ export default {
     transactionData() {
       return {
         type: transaction.WITHDRAW,
-        denom: this.denom,
+        denom: this.context.denom,
         validatorAddress: this.validatorAddress
       }
     },
