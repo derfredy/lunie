@@ -9,6 +9,7 @@
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
     @close="clear"
+    :context="context"
   >
     <TmFormGroup
       :error="$v.denom.$dirty && $v.denom.$invalid"
@@ -143,6 +144,13 @@ export default {
     TmFormMsg,
     ActionModal,
     TmBtn
+  },
+  props: {
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
+    }
   },
   data: () => ({
     address: ``,

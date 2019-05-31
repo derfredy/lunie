@@ -9,6 +9,7 @@
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
     @close="clear"
+    :context="context"
   >
     <TmFormGroup
       :error="$v.title.$error && $v.title.$invalid"
@@ -135,6 +136,11 @@ export default {
     denom: {
       type: String,
       required: true
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   data: () => ({

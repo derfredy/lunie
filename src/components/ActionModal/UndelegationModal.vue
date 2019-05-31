@@ -10,6 +10,7 @@
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
     @close="clear"
+    :context="context"
   >
     <TmFormGroup class="action-modal-form-group">
       <div class="form-message notice">
@@ -105,6 +106,11 @@ export default {
     denom: {
       type: String,
       required: true
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   data: () => ({

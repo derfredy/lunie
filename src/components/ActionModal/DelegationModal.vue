@@ -10,6 +10,7 @@
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
     @close="clear"
+    :context="context"
   >
     <TmFormGroup class="action-modal-form-group" field-id="to" field-label="To">
       <TmField id="to" v-model="to" type="text" readonly />
@@ -113,6 +114,11 @@ export default {
     denom: {
       type: String,
       required: true
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   data: () => ({

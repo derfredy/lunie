@@ -9,6 +9,7 @@
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
     @close="clear"
+    :context="context"
   >
     <TmFormGroup class="action-modal-group vote-options">
       <TmBtn
@@ -91,6 +92,11 @@ export default {
     lastVoteOption: {
       default: undefined,
       type: String
+    },
+    context: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   },
   data: () => ({
