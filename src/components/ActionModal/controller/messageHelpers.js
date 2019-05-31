@@ -20,6 +20,40 @@ function createWithdrawTransaction(context, { validatorAddress }) {
   return { validatorAddresses }
 }
 
+function createDelegateTransaction(context, { validatorAddress, amount }) {
+  return { validatorAddress, amount: String(uatoms(amount)) }
+}
+
+function createUndelegateTransaction(context, { validatorAddress, amount }) {
+  return { validatorAddress, amount: String(uatoms(amount)) }
+}
+
+function createRedelegateTransaction(
+  context,
+  { validatorSrc, validatorDst, amount }
+) {
+  return { validatorSrc, validatorDst, amount: String(uatoms(amount)) }
+}
+
+function createSubmitProposalTransaction(
+  context,
+  { title, description, denom, amount }
+) {
+  return {
+    title,
+    description,
+    initialDeposits: [{ amount: String(uatoms(amount)), denom }]
+  }
+}
+
+function createVoteTransaction(context, { proposalId, option }) {
+  return { proposalId, option }
+}
+
+function createDepositTransaction(context, { proposalId, amount, denom }) {
+  return { proposalId, amounts: [{ amount: String(uatoms(amount)), denom }] }
+}
+
 export function createMessageArguments(
   context,
   type,
@@ -33,6 +67,24 @@ export function createMessageArguments(
       break
     case transaction.WITHDRAW:
       tx = createWithdrawTransaction(context, properties)
+      break
+    case transaction.DELEGATE:
+      tx = createDelegateTransaction(context, properties)
+      break
+    case transaction.UNDELEGATE:
+      tx = createUndelegateTransaction(context, properties)
+      break
+    case transaction.REDELEGATE:
+      tx = createRedelegateTransaction(context, properties)
+      break
+    case transaction.SUBMIT_PROPOSAL:
+      tx = createSubmitProposalTransaction(context, properties)
+      break
+    case transaction.VOTE:
+      tx = createVoteTransaction(context, properties)
+      break
+    case transaction.DEPOSIT:
+      tx = createDepositTransaction(context, properties)
       break
     default:
       tx = null

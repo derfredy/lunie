@@ -142,7 +142,7 @@ export default {
       if (this.from === this.session.address) {
         return {
           type: transaction.DELEGATE,
-          validator_address: this.validator.operator_address,
+          validatorAddress: this.validator.operator_address,
           amount: this.amount
         }
       } else {
@@ -151,8 +151,8 @@ export default {
         )
         return {
           type: transaction.REDELEGATE,
-          validatorSrc,
-          validatorDst: this.validator,
+          validatorSrc: this.fromOptions[this.selectedIndex].address,
+          validatorDst: this.validator.operator_address,
           amount: this.amount
         }
       }

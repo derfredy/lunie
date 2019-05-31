@@ -124,7 +124,7 @@ export default {
       return {
         type: transaction.UNDELEGATE,
         amount: this.amount,
-        validator: this.validator
+        validatorAddress: this.validator.operator_address
       }
     },
     notifyMessage() {

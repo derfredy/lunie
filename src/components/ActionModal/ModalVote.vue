@@ -107,7 +107,7 @@ export default {
     transactionData() {
       return {
         type: transaction.VOTE,
-        proposal_id: this.proposalId,
+        proposalId: this.proposalId,
         option: this.vote
       }
     },

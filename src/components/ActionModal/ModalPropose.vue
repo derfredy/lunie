@@ -169,12 +169,8 @@ export default {
         type: transaction.PROPOSE,
         title: this.title,
         description: this.description,
-        initial_deposit: [
-          {
-            denom: this.denom,
-            amount: this.amount
-          }
-        ]
+        denom: this.denom,
+        amount: this.amount
       }
     },
     notifyMessage() {
