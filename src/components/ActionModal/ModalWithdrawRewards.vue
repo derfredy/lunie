@@ -14,8 +14,12 @@
       field-id="amount"
       field-label="Amount"
     >
-      <span class="input-suffix">{{ denom | viewDenom }}</span>
-      <TmField id="amount" :value="rewards | atoms | fullDecimals" readonly />
+      <span class="input-suffix">{{ context.denom | viewDenom }}</span>
+      <TmField
+        id="amount"
+        :value="context.totalRewards | atoms | fullDecimals"
+        readonly
+      />
     </TmFormGroup>
     <span v-if="!validatorAddress" class="form-message withdraw-limit">
       Note: Lunie will withdraw only the top 5 rewards in a single transaction
@@ -48,14 +52,6 @@ export default {
       type: String,
       required: false,
       default: null
-    },
-    rewards: {
-      type: Number,
-      default: 0
-    },
-    denom: {
-      type: String,
-      required: true
     },
     context: {
       type: Object,
