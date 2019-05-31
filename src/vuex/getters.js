@@ -115,7 +115,8 @@ export const modalContext = (state, getters) => {
     session: state.session,
     denom: getters.bondDenom,
     totalRewards: state.distribution.totalRewards.uatom,
-    availableAtoms: getters.liquidAtoms
+    availableAtoms: getters.liquidAtoms,
+    committedDelegations: state.delegation.committedDelegates
   }
   console.log(`modalContext`, r)
   return r
