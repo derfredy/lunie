@@ -28,12 +28,7 @@
       </div>
     </div>
     <slot />
-    <ModalWithdrawRewards
-      ref="ModalWithdrawRewards"
-      :rewards="totalRewards"
-      :denom="bondDenom"
-      :context="modalContext"
-    />
+    <ModalWithdrawRewards ref="ModalWithdrawRewards" :context="modalContext" />
   </div>
 </template>
 <script>

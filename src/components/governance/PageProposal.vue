@@ -126,12 +126,14 @@
         :proposal-id="proposalId"
         :proposal-title="title"
         :denom="depositDenom"
+        :context="modalContext"
       />
       <ModalVote
         ref="modalVote"
         :proposal-id="proposalId"
         :proposal-title="title"
         :last-vote-option="lastVote && lastVote.option"
+        :context="modalContext"
       />
     </template>
   </TmPage>
@@ -175,7 +177,8 @@ export default {
       `connected`,
       `wallet`,
       `votes`,
-      `session`
+      `session`,
+      `modalContext`
     ]),
     proposal({ proposals, proposalId } = this) {
       return proposals.proposals[proposalId]

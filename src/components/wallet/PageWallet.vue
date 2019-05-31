@@ -30,7 +30,7 @@
         @show-modal="showModal"
       />
     </template>
-    <SendModal ref="sendModal" />
+    <SendModal ref="sendModal" :context="modalContext" />
   </TmPage>
 </template>
 
@@ -53,7 +53,7 @@ export default {
   },
   data: () => ({ num, showSendModal: false }),
   computed: {
-    ...mapGetters([`wallet`, `connected`, `session`]),
+    ...mapGetters([`wallet`, `connected`, `session`, `modalContext`]),
     dataEmpty() {
       return this.wallet.balances.length === 0
     },

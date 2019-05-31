@@ -176,6 +176,7 @@
         :to="validator.operator_address"
         :validator="validator"
         :denom="bondDenom"
+        :context="modalContext"
       />
       <UndelegationModal
         ref="undelegationModal"
@@ -183,12 +184,14 @@
         :to="session.signedIn ? session.address : ``"
         :validator="validator"
         :denom="bondDenom"
+        :context="modalContext"
       />
       <ModalWithdrawRewards
         ref="modalWithdrawRewards"
         :validator-address="validator.operator_address"
         :rewards="rewards"
         :denom="bondDenom"
+        :context="modalContext"
       />
     </template>
   </TmPage>
@@ -240,7 +243,8 @@ export default {
       `liquidAtoms`,
       `session`,
       `connected`,
-      `pool`
+      `pool`,
+      `modalContext`
     ]),
     validator() {
       const validator = this.delegates.delegates.find(
