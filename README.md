@@ -81,13 +81,31 @@ You should now have a bunch of stake to play with.
 Create the bundle to deploy Lunie you can run:
 
 ```bash
-yarn build:ui
+yarn build
 ```
 
 If you want to set a particular `Stargate` (Cosmos SDK REST API) or Tendermint's `RPC` endpoints:
 
 ```bash
 STARGATE=<https://StargateAddress:port> RPC=<https://RPCAddress:port> yarn build:ui
+```
+
+### Mobile
+
+#### Android
+
+Prerequesits: 
+- Android Studio
+- Gradle updated to 5.1.1 (Android Studio > File > Project Structure)
+
+You will probably also want a virtual Android device which you can create from inside the Android Studio.
+
+To run the Android version of Lunie in development:
+
+```bash
+$ yarn build
+$ npx @capacitor/cli sync android
+$ npx @capacitor/cli open android
 ```
 
 ## Release
@@ -97,6 +115,17 @@ Lunie has a automated release process. Every night the CI creates a new release 
 ```bash
 yarn release
 ```
+
+### Mobile
+
+First prepare the mobile packages by running:
+
+```bash
+$ yarn build
+$ npx @capacitor/cli sync android|ios
+```
+
+The mobile packages of Lunie need to be released using the individual software (Android Studio / XCODE).
 
 ## Testing
 
