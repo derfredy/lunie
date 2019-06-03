@@ -4,20 +4,26 @@ import { getSigner } from "./signer"
 import transaction from "./transactionTypes"
 
 import {
-  createMessage,
+  createCosmosMessage,
   createMultiMessage,
-  createMessageArguments,
-  convertGasPriceData
-} from "./messageHelpers.js"
+  formatCosmosArguments,
+  convertCurrencyData
+} from "./cosmosMessages"
 
-class ActionController {
+class ActionManager {
   setContext(context) {
     this.context = context
     this.cosmos = new Cosmos(context.url, context.chainId)
   }
 
   async simulate(type, transactionProperties) {
-    const txArguments = createMessageArguments(
+    if (!this.context.connected) {
+      throw Error(
+        `Currently not connected to a secure node. Please try again when Lunie has secured a connection.`
+      )
+    }
+
+    const txArguments = formatCosmosArguments(
       this.context,
       type,
       transactionProperties,
@@ -30,7 +36,7 @@ class ActionController {
       )
     }
 
-    const message = createMessage(
+    const message = createCosmosMessage(
       this.cosmos,
       type,
       this.context.session.address,
@@ -50,7 +56,13 @@ class ActionController {
     submitType,
     password
   ) {
-    const txArguments = createMessageArguments(
+    if (!this.context.connected) {
+      throw Error(
+        `Currently not connected to a secure node. Please try again when Lunie has secured a connection.`
+      )
+    }
+
+    const txArguments = formatCosmosArguments(
       this.context,
       type,
       transactionProperties
@@ -74,7 +86,7 @@ class ActionController {
         txArguments
       )
     } else {
-      message = createMessage(
+      message = createCosmosMessage(
         this.cosmos,
         type,
         this.context.session.address,
@@ -85,7 +97,7 @@ class ActionController {
     const { included } = await message.send(
       {
         gas: String(gasEstimate),
-        gas_prices: convertGasPriceData([gasPrices]),
+        gas_prices: convertCurrencyData([gasPrices]),
         memo: transactionProperties.memo
       },
       signer
@@ -94,4 +106,4 @@ class ActionController {
   }
 }
 
-export default ActionController
+export default ActionManager

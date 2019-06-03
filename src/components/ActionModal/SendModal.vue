@@ -8,8 +8,8 @@
     submission-error-prefix="Sending tokens failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup
       :error="$v.denom.$dirty && $v.denom.$invalid"
@@ -128,7 +128,7 @@
 import b32 from "scripts/b32"
 import { required, between, decimal, maxLength } from "vuelidate/lib/validators"
 import num, { atoms, SMALLEST } from "../../scripts/num.js"
-import { mapActions, mapGetters } from "vuex"
+import { mapGetters } from "vuex"
 import TmFormGroup from "common/TmFormGroup"
 import TmField from "common/TmField"
 import TmFormMsg from "common/TmFormMsg"
@@ -178,10 +178,10 @@ export default {
     },
     notifyMessage() {
       return {
-        title: `Successful redelegation!`,
-        body: `You have successfully redelegated your ${num.viewDenom(
+        title: `Successful Send`,
+        body: `Successfully sent ${+this.amount} ${num.viewDenom(
           this.denom
-        )}s`
+        )}s to ${this.address}`
       }
     }
   },
@@ -191,7 +191,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions([`sendTx`, `simulateTx`]),
     open(denom) {
       this.denom = denom
       this.$refs.actionModal.open()

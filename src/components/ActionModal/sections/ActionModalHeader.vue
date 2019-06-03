@@ -12,19 +12,32 @@
         <i class="material-icons">close</i>
       </div>
     </div>
-    <Steps v-if="steps" :steps="steps" :active="step" />
+    <Steps v-if="steps" :steps="steps" :active-step="step" />
   </div>
 </template>
 
 <script>
-import Steps from "common/Steps"
+import Steps from "./Steps"
 
 export default {
   name: `action-modal-header`,
   components: {
     Steps
   },
-  props: ["title", "close", "steps", "step"]
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    steps: {
+      type: Array,
+      required: true
+    },
+    step: {
+      type: String,
+      required: true
+    }
+  }
 }
 </script>
 

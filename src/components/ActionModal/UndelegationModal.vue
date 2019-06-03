@@ -9,8 +9,8 @@
     submission-error-prefix="Undelegating failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup class="action-modal-form-group">
       <div class="form-message notice">
@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import { between, decimal } from "vuelidate/lib/validators"
 import ActionModal from "./ActionModal"
@@ -119,11 +118,11 @@ export default {
     num
   }),
   computed: {
-    ...mapGetters([`liquidAtoms`]),
     transactionData() {
       return {
         type: transaction.UNDELEGATE,
         amount: this.amount,
+        denom: this.denom,
         validatorAddress: this.validator.operator_address
       }
     },

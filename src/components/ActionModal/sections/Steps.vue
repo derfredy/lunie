@@ -4,7 +4,7 @@
       v-for="(step, i) in steps"
       :key="step"
       :title="step"
-      :active="step.toLocaleLowerCase() === active.toLocaleLowerCase()"
+      :active="step.toLocaleLowerCase() === activeStep.toLocaleLowerCase()"
       :number="i"
       :include-line="i < steps.length - 1"
     />
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Step from "common/StepComponent"
+import Step from "./StepComponent"
 export default {
   name: "Steps",
   components: {
@@ -23,8 +23,7 @@ export default {
       type: Array,
       required: true
     },
-    // active step name
-    active: {
+    activeStep: {
       type: String,
       required: true
     }

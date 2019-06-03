@@ -1,12 +1,12 @@
 const transactionTypes = {
   SEND: `MsgSend`,
-  WITHDRAW: `MsgWithdrawDelegationReward`,
   DELEGATE: `MsgDelegate`,
   UNDELEGATE: `MsgUndelegate`,
-  REDELGATE: `MsgRedelegate`,
+  REDELEGATE: `MsgRedelegate`,
   SUBMIT_PROPOSAL: `MsgSubmitProposal`,
   VOTE: `MsgVote`,
-  DEPOSIT: `MsgDeposit`
+  DEPOSIT: `MsgDeposit`,
+  WITHDRAW: `MsgWithdrawDelegationReward`
 }
 
 export default transactionTypes

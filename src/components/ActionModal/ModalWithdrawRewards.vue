@@ -7,6 +7,7 @@
     submission-error-prefix="Withdrawal failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
+    :post-submit="postSubmit"
     :context="context"
   >
     <TmFormGroup
@@ -77,6 +78,9 @@ export default {
   methods: {
     open() {
       this.$refs.actionModal.open()
+    },
+    postSubmit() {
+      this.$store.dispatch("postWithdrawAllRewards")
     }
   }
 }

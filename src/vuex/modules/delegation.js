@@ -125,52 +125,17 @@ export default ({ node }) => {
         dispatch(`getBondedDelegates`, candidates)
       }
     },
-    async simulateDelegation(
+    async postSubmitDelegation(
       {
-        rootState: { stakingParameters, session },
-        dispatch
-      },
-      { validator_address, amount }
-    ) {
-      const denom = stakingParameters.parameters.bond_denom
-
-      return await dispatch(`simulateTx`, {
-        type: `MsgDelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_address,
-          amount,
-          denom
-        }
-      })
-    },
-    async submitDelegation(
-      {
-        rootState: { stakingParameters, session },
+        rootState: { stakingParameters },
         getters: { liquidAtoms },
         state,
         dispatch,
         commit
       },
-      { validator_address, amount, gas, gas_prices, password, submitType }
+      { validator_address, amount }
     ) {
       const denom = stakingParameters.parameters.bond_denom
-
-      await dispatch(`sendTx`, {
-        type: `MsgDelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_address,
-          amount,
-          denom
-        },
-        gas,
-        gas_prices,
-        password,
-        submitType
-      })
 
       // optimistic update the atoms of the user before we get the new values from chain
       commit(`updateWalletBalance`, {
@@ -187,102 +152,14 @@ export default ({ node }) => {
       // load delegates after delegation to get new atom distribution on validators
       dispatch(`updateDelegates`)
     },
-    async simulateUnbondingDelegation(
-      {
-        rootState: { stakingParameters, session },
-        dispatch
-      },
-      { validator, amount }
-    ) {
-      const denom = stakingParameters.parameters.bond_denom
-      return await dispatch(`simulateTx`, {
-        type: `MsgUndelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_address: validator.operator_address,
-          denom,
-          amount
-        }
-      })
-    },
-    async submitUnbondingDelegation(
-      {
-        rootState: { stakingParameters, session },
-        dispatch
-      },
-      { validator, amount, gas, gas_prices, password, submitType }
-    ) {
-      const denom = stakingParameters.parameters.bond_denom
-      await dispatch(`sendTx`, {
-        type: `MsgUndelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_address: validator.operator_address,
-          amount,
-          denom
-        },
-        gas,
-        gas_prices,
-        password,
-        submitType
-      })
+    async postSubmitUnbondingDelegation({ dispatch }) {
       await dispatch(`getAllTxs`)
     },
-    async simulateRedelegation(
-      {
-        rootState: { stakingParameters, session },
-        dispatch
-      },
+    async postSubmitRedelegation(
+      { dispatch },
+      // eslint-disable-next-line no-unused-vars
       { validatorSrc, validatorDst, amount }
     ) {
-      const denom = stakingParameters.parameters.bond_denom
-      return await dispatch(`simulateTx`, {
-        type: `MsgRedelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_src_address: validatorSrc.operator_address,
-          validator_dst_address: validatorDst.operator_address,
-          amount,
-          denom
-        }
-      })
-    },
-    async submitRedelegation(
-      {
-        rootState: { stakingParameters, session },
-        dispatch
-      },
-      {
-        validatorSrc,
-        validatorDst,
-        amount,
-        gas,
-        gas_prices,
-        password,
-        submitType
-      }
-    ) {
-      const denom = stakingParameters.parameters.bond_denom
-
-      await dispatch(`sendTx`, {
-        type: `MsgRedelegate`,
-        txArguments: {
-          toAddress: session.address,
-          delegator_address: session.address,
-          validator_src_address: validatorSrc.operator_address,
-          validator_dst_address: validatorDst.operator_address,
-          amount,
-          denom
-        },
-        gas,
-        gas_prices,
-        password,
-        submitType
-      })
-
       await dispatch(`getAllTxs`)
     }
   }

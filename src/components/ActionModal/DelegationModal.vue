@@ -9,8 +9,8 @@
     submission-error-prefix="Delegating failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup class="action-modal-form-group" field-id="to" field-label="To">
       <TmField id="to" v-model="to" type="text" readonly />
@@ -81,7 +81,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import { between, decimal } from "vuelidate/lib/validators"
 import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import TmField from "common/TmField"
@@ -127,38 +126,39 @@ export default {
     num
   }),
   computed: {
-    ...mapGetters([`delegates`, `session`, `bondDenom`]),
     balance() {
-      if (!this.session.signedIn) return 0
+      if (!this.context.session.signedIn) return 0
 
       return this.fromOptions[this.selectedIndex].maximum
     },
     from() {
-      if (!this.session.signedIn) return ``
+      if (!this.context.session.signedIn) return ``
 
       return this.fromOptions[this.selectedIndex].address
     },
     transactionData() {
-      if (this.from === this.session.address) {
+      if (this.from === this.context.session.address) {
         return {
           type: transaction.DELEGATE,
           validatorAddress: this.validator.operator_address,
-          amount: this.amount
+          amount: this.amount,
+          denom: this.denom
         }
       } else {
-        const validatorSrc = this.delegates.delegates.find(
+        const validatorSrc = this.context.delegates.find(
           v => this.from === v.operator_address
         )
         return {
           type: transaction.REDELEGATE,
-          validatorSrc: this.fromOptions[this.selectedIndex].address,
+          validatorSrc: validatorSrc.operator_address,
           validatorDst: this.validator.operator_address,
-          amount: this.amount
+          amount: this.amount,
+          denom: this.denom
         }
       }
     },
     notifyMessage() {
-      if (this.from === this.session.address) {
+      if (this.from === this.context.session.address) {
         return {
           title: `Successful delegation!`,
           body: `You have successfully delegated your ${num.viewDenom(
@@ -192,10 +192,17 @@ export default {
       this.amount = null
     },
     isRedelegation() {
-      return this.from !== this.session.address
+      return this.from !== this.context.session.address
     },
     getFromBalance() {
       return atoms(this.balance)
+    },
+    postSubmit(data) {
+      if (this.from === this.context.session.address) {
+        this.$store.dispatch("postSubmitDelegation", data)
+      } else {
+        this.$store.dispatch("postSubmitRedelegation", data)
+      }
     }
   },
   validations() {

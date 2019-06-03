@@ -5,7 +5,7 @@
     field-id="gasPrice"
     field-label="Gas Price"
   >
-    <span class="input-suffix">{{ bondDenom | viewDenom }}</span>
+    <span class="input-suffix">{{ denom | viewDenom }}</span>
     <TmField
       id="gas-price"
       v-model="gasPrice"
@@ -15,7 +15,7 @@
     />
     <TmFormMsg
       v-if="balance === 0"
-      :msg="`doesn't have any ${bondDenom}s`"
+      :msg="`doesn't have any ${denom}s`"
       name="Wallet"
       type="custom"
     />
@@ -35,17 +35,16 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import { between, requiredIf } from "vuelidate/lib/validators"
-import { viewDenom, atoms } from "../../scripts/num.js"
-import TmFormGroup from "common/TmFormGroup"
-import TmField from "common/TmField"
-import TmFormMsg from "common/TmFormMsg"
+import { viewDenom, atoms } from "src/scripts/num.js"
+import TmFormGroup from "src/components/common/TmFormGroup"
+import TmField from "src/components/common/TmField"
+import TmFormMsg from "src/components/common/TmFormMsg"
 
 const feeStep = `fees`
 
 export default {
-  name: `dev-data`,
+  name: `experimental-fees`,
   components: {
     TmFormGroup,
     TmField,
@@ -55,6 +54,10 @@ export default {
     viewDenom
   },
   props: {
+    session: {
+      type: Object,
+      required: true
+    },
     step: {
       type: String,
       default: ""
@@ -66,10 +69,11 @@ export default {
     balance: {
       type: String,
       default: ""
+    },
+    denom: {
+      type: String,
+      required: true
     }
-  },
-  computed: {
-    ...mapGetters([`session`, `bondDenom`])
   },
   validations() {
     return {

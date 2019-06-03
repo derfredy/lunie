@@ -9,7 +9,11 @@
       color="primary"
       @click.native="onPropose"
     />
-    <ModalPropose ref="modalPropose" :denom="depositDenom" />
+    <ModalPropose
+      ref="modalPropose"
+      :denom="depositDenom"
+      :context="modalContext"
+    />
     <router-view />
   </TmPage>
 </template>
@@ -42,7 +46,13 @@ export default {
     ]
   }),
   computed: {
-    ...mapGetters([`proposals`, `depositDenom`, `connected`, `session`])
+    ...mapGetters([
+      `proposals`,
+      `depositDenom`,
+      `connected`,
+      `session`,
+      `modalContext`
+    ])
   },
   mounted() {
     this.ps = new PerfectScrollbar(this.$el.querySelector(`.tm-page-main`))

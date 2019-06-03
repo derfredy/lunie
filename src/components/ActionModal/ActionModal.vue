@@ -3,7 +3,6 @@
     <div v-focus-last class="action-modal" tabindex="0" @keyup.esc="close">
       <ActionModalHeader
         :title="title"
-        :requires-sign-in="requiresSignIn"
         :steps="steps"
         :step="step"
         @close-action-modal="close"
@@ -22,6 +21,7 @@
         :balance="balance"
         :gas-price="gasPrice"
         :gas-estimate="gasEstimate"
+        :denom="context.denom"
       />
       <SignStep
         v-else-if="step === `sign`"
@@ -34,14 +34,13 @@
       />
       <ActionModalFooter
         :session="session"
-        :requires-sign-in="requiresSignIn"
         :balance="balance"
         :step="step"
         :sending="sending"
         :selected-sign-method="selectedSignMethod"
-        :connected="connected"
-        :validate-change-step="validateChangeStep"
+        :connected="context.connected"
         :submission-error="submissionError"
+        @validate-change-step="validateChangeStep"
         @go-to-session="goToSession"
       />
     </div>
@@ -49,18 +48,17 @@
 </template>
 
 <script>
-import ActionModalHeader from "./ActionModalHeader"
-import ActionModalFooter from "./ActionModalFooter"
-import ActionFees from "./ActionFees"
-import SignStep from "./SignStep"
-import { mapGetters } from "vuex"
+import ActionModalHeader from "./sections/ActionModalHeader"
+import ActionModalFooter from "./sections/ActionModalFooter"
+import ActionFees from "./sections/ActionFees"
+import SignStep from "./sections/SignStep"
 import { uatoms, atoms, viewDenom } from "../../scripts/num.js"
 import { between, requiredIf } from "vuelidate/lib/validators"
 import { track } from "scripts/google-analytics.js"
 import config from "src/config"
 
-import ActionController from "./controller/ActionController.js"
-let actionController
+import ActionManager from "./controller/ActionManager.js"
+let actionManager
 
 const defaultStep = `details`
 const feeStep = `fees`
@@ -102,6 +100,11 @@ export default {
       type: Object,
       default: () => {}
     },
+    postSubmit: {
+      type: Function,
+      required: false,
+      default: () => {}
+    },
     context: {
       type: Object,
       required: false,
@@ -123,26 +126,15 @@ export default {
     uatoms,
     viewDenom
   }),
-  mounted: function() {
-    actionController = new ActionController()
-  },
-  updated: function() {
-    actionController.setContext(this.context)
-  },
   computed: {
-    ...mapGetters([
-      `connected`,
-      `session`,
-      `bondDenom`,
-      `wallet`,
-      `ledger`,
-      `liquidAtoms`
-    ]),
+    session() {
+      return this.context.session
+    },
     requiresSignIn() {
       return !this.session.signedIn
     },
     balance() {
-      return this.liquidAtoms
+      return this.context.availableAtoms
     },
     invoiceTotal() {
       return (
@@ -181,6 +173,12 @@ export default {
         }
       ]
     }
+  },
+  mounted: function() {
+    actionManager = new ActionManager()
+  },
+  updated: function() {
+    actionManager.setContext(this.context)
   },
   methods: {
     open() {
@@ -249,7 +247,7 @@ export default {
     async simulate() {
       try {
         const { type, ...properties } = this.transactionData
-        this.gasEstimate = await actionController.simulate(type, properties)
+        this.gasEstimate = await actionManager.simulate(type, properties)
         this.step = feeStep
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
@@ -267,11 +265,11 @@ export default {
 
       const gasPrice = {
         amount: this.gasPrice,
-        denom: this.bondDenom
+        denom: this.context.bondDenom
       }
-      console.log(gasPrice)
+
       try {
-        await actionController.send(
+        await actionManager.send(
           type,
           properties,
           this.gasEstimate,
@@ -282,6 +280,7 @@ export default {
         track(`event`, `successful-submit`, this.title, this.selectedSignMethod)
         // this.close()
         this.$store.commit(`notify`, this.notifyMessage)
+        this.postSubmit(properties)
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
         track(`event`, `failed-submit`, this.title, message)

@@ -109,15 +109,17 @@ export const blocks = state => (state.blocks ? state.blocks.blocks : [])
 export const block = state => (state.blocks ? state.blocks.block : [])
 
 export const modalContext = (state, getters) => {
-  const r = {
+  const context = {
     url: state.connection.externals.node.url,
     chainId: state.connection.lastHeader.chain_id,
+    connected: state.connection.connected,
     session: state.session,
     denom: getters.bondDenom,
     totalRewards: state.distribution.totalRewards.uatom,
     availableAtoms: getters.liquidAtoms,
-    committedDelegations: state.delegation.committedDelegates
+    committedDelegations: state.delegation.committedDelegates,
+    delegates: getters.delegates.delegates
   }
-  console.log(`modalContext`, r)
-  return r
+  console.log(`modalContext`, context)
+  return context
 }

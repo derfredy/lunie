@@ -87,7 +87,7 @@ export default {
       return this.num.shortDecimals(
         this.num.atoms(rewards && rewards > 10 ? rewards : 0)
       )
-    },
+    }
   },
   watch: {
     lastHeader: {

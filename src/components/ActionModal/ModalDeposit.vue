@@ -9,8 +9,8 @@
     submission-error-prefix="Depositing failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup
       :error="$v.amount.$error && $v.amount.$invalid"
@@ -21,7 +21,7 @@
       <span class="input-suffix">{{ num.viewDenom(denom) }}</span>
       <TmField id="amount" v-model="amount" type="number" />
       <TmFormMsg
-        v-if="balance === 0"
+        v-if="context.availableAtoms === 0"
         :msg="`doesn't have any ${num.viewDenom(denom)}s`"
         name="Wallet"
         type="custom"
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import num, { atoms, SMALLEST } from "../../scripts/num.js"
 import { between, decimal } from "vuelidate/lib/validators"
 import TmField from "common/TmField"
@@ -89,22 +88,11 @@ export default {
     amount: 0
   }),
   computed: {
-    ...mapGetters([`wallet`, `bondDenom`]),
-    balance() {
-      // TODO: refactor to get the selected coin when multicoin deposit is enabled
-      if (!this.wallet.loading && !!this.wallet.balances.length) {
-        const balance = this.wallet.balances.find(
-          coin => coin.denom === this.denom
-        )
-        if (balance) return parseFloat(balance.amount)
-      }
-      return 0
-    },
     transactionData() {
       return {
         type: transaction.DEPOSIT,
-        proposal_id: this.proposalId,
-        amount: [
+        proposalId: this.proposalId,
+        amounts: [
           {
             amount: this.amount,
             denom: this.denom
@@ -126,7 +114,7 @@ export default {
       amount: {
         required: x => !!x && x !== `0`,
         decimal,
-        between: between(SMALLEST, atoms(this.balance))
+        between: between(SMALLEST, atoms(this.context.availableAtoms))
       }
     }
   },
@@ -143,6 +131,9 @@ export default {
       this.$v.$reset()
 
       this.amount = 0
+    },
+    postSubmit(data) {
+      this.$store.dispatch("postSubmitDeposit", data)
     }
   }
 }

@@ -3,7 +3,7 @@
     <TmFormGroup class="action-modal-group">
       <div>
         <TmBtn
-          v-if="requiresSignIn"
+          v-if="!session.signedIn"
           value="Sign In"
           color="primary"
           @click.native="$emit('go-to-session')"
@@ -29,14 +29,14 @@
           color="primary"
           value="Next"
           :disabled="step === `fees` && $v.invoiceTotal.$invalid"
-          @click.native="validateChangeStep"
+          @click.native="$emit('validate-change-step')"
         />
         <TmBtn
           v-else
           color="primary"
           value="Submit"
           :disabled="!session.browserWithLedgerSupport"
-          @click.native="validateChangeStep"
+          @click.native="$emit('validate-change-step')"
         />
       </div>
     </TmFormGroup>
@@ -51,9 +51,9 @@
 
 <script>
 import { between } from "vuelidate/lib/validators"
-import { viewDenom, atoms } from "../../scripts/num.js"
-import TmFormGroup from "common/TmFormGroup"
-import TmBtn from "common/TmBtn"
+import { viewDenom, atoms } from "src/scripts/num.js"
+import TmFormGroup from "src/components/common/TmFormGroup"
+import TmBtn from "src/components/common/TmBtn"
 
 export default {
   name: `action-modal-footer`,
@@ -64,17 +64,37 @@ export default {
   filters: {
     viewDenom
   },
-  props: [
-    "session",
-    "requiresSignIn",
-    "balance",
-    "step",
-    "sending",
-    "selectedSignMethod",
-    "connected",
-    "validateChangeStep",
-    "submissionError"
-  ],
+  props: {
+    session: {
+      type: Object,
+      required: true
+    },
+    balance: {
+      type: String,
+      required: true
+    },
+    step: {
+      type: String,
+      required: true
+    },
+    sending: {
+      type: Boolean,
+      required: true
+    },
+    selectedSignMethod: {
+      type: String,
+      required: true
+    },
+    connected: {
+      type: Boolean,
+      required: true
+    },
+    submissionError: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
   validations() {
     return {
       invoiceTotal: {

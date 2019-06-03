@@ -2,14 +2,13 @@
   <ActionModal
     id="modal-vote"
     ref="actionModal"
-    :submit-fn="submitForm"
     title="Vote"
     class="modal-vote"
     submission-error-prefix="Voting failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup class="action-modal-group vote-options">
       <TmBtn
@@ -141,6 +140,9 @@ export default {
       this.$v.$reset()
 
       this.vote = null
+    },
+    postSubmit(data) {
+      this.$store.dispatch("postSubmitVote", data)
     }
   }
 }

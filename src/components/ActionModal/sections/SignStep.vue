@@ -43,7 +43,7 @@
         v-model="password"
         type="password"
         placeholder="Password"
-        @change="$emit('onChangePassword', password)"
+        @change="$emit('on-change-password', password)"
       />
       <TmFormMsg
         v-if="$v.password.$error && !$v.password.required"
@@ -59,8 +59,8 @@ const signWithLocalKeystore = `local`
 const signStep = `sign`
 
 import { requiredIf } from "vuelidate/lib/validators"
-import HardwareState from "../common/TmHardwareState"
-import TmFormMsg from "../common/TmFormMsg"
+import HardwareState from "src/components/common/TmHardwareState"
+import TmFormMsg from "src/components/common/TmFormMsg"
 
 export default {
   name: `action-sign-step`,
@@ -68,13 +68,24 @@ export default {
     HardwareState,
     TmFormMsg
   },
-  props: [
-    `signMethods`,
-    `selected-sign-method`,
-    `session`,
-    `sending`,
-    `password-change`
-  ],
+  props: {
+    session: {
+      type: Object,
+      required: true
+    },
+    signMethods: {
+      type: Array,
+      required: true
+    },
+    selectedSignMethod: {
+      type: String,
+      required: true
+    },
+    sending: {
+      type: String,
+      required: true
+    }
+  },
   data: () => ({
     password: null
   }),

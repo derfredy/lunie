@@ -8,8 +8,8 @@
     submission-error-prefix="Submitting proposal failed"
     :transaction-data="transactionData"
     :notify-message="notifyMessage"
-    @close="clear"
     :context="context"
+    @close="clear"
   >
     <TmFormGroup
       :error="$v.title.$error && $v.title.$invalid"
@@ -166,7 +166,8 @@ export default {
     },
     transactionData() {
       return {
-        type: transaction.PROPOSE,
+        type: transaction.SUBMIT_PROPOSAL,
+        proposalType: this.type,
         title: this.title,
         description: this.description,
         denom: this.denom,
@@ -219,6 +220,9 @@ export default {
       this.title = ``
       this.description = ``
       this.amount = 0
+    },
+    postSubmit(data) {
+      this.$store.dispatch("postSubmitProposal", data)
     }
   }
 }

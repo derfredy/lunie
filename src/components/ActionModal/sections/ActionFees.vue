@@ -1,10 +1,12 @@
 <template>
   <div class="action-modal-form">
-    <DevTransaction
+    <ExperimentalFees
       v-if="session.experimentalMode"
       :step="step"
       :gas-price="gasPrice"
       :balance="balance"
+      :denom="denom"
+      :session="session"
     />
     <TableInvoice
       :amount="Number(amount)"
@@ -22,10 +24,10 @@
 </template>
 
 <script>
-import DevTransaction from "./DevTransaction"
-import TableInvoice from "../common/TableInvoice"
-import TmFormMsg from "../common/TmFormMsg"
-import { atoms } from "../../scripts/num"
+import ExperimentalFees from "./ExperimentalFees"
+import TableInvoice from "src/components/common/TableInvoice"
+import TmFormMsg from "src/components/common/TmFormMsg"
+import { atoms } from "src/scripts/num"
 import { between, requiredIf } from "vuelidate/lib/validators"
 
 const feeStep = `fees`
@@ -33,11 +35,40 @@ const feeStep = `fees`
 export default {
   name: `action-fees`,
   components: {
-    DevTransaction,
+    ExperimentalFees,
     TableInvoice,
     TmFormMsg
   },
-  props: ["session", "step", "gasPrice", "amount", "balance", "gasEstimate"],
+  props: {
+    session: {
+      type: Object,
+      required: true
+    },
+    step: {
+      type: String,
+      required: true
+    },
+    gasPrice: {
+      type: String,
+      required: true
+    },
+    amount: {
+      type: Number,
+      required: true
+    },
+    balance: {
+      type: String,
+      required: true
+    },
+    gasEstimate: {
+      type: Number,
+      required: true
+    },
+    denom: {
+      type: String,
+      required: true
+    }
+  },
   validations() {
     return {
       gasPrice: {
