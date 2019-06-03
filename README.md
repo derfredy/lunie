@@ -108,6 +108,20 @@ $ npx @capacitor/cli sync android
 $ npx @capacitor/cli open android
 ```
 
+#### iOS
+
+Prerequesits:
+- Xcode 10
+
+To open Lunie in Xcode:
+  
+```bash
+$ yarn build`
+$ npx @capacitor/cli sync ios
+$ npx @capacitor/cli open ios
+```
+Once Xcode is open, just click the Play button to run Lunie on your preferred Simulator or Device.
+
 ## Release
 
 Lunie has a automated release process. Every night the CI creates a new release PR. To release manually, run
@@ -125,7 +139,7 @@ $ yarn build
 $ npx @capacitor/cli sync android|ios
 ```
 
-The mobile packages of Lunie need to be released using the individual software (Android Studio / XCODE).
+The mobile packages of Lunie need to be released using the individual software (Android Studio / Xcode).
 
 ## Testing
 
