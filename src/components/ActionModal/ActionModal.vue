@@ -161,7 +161,7 @@ export default {
       if (this.session.sessionType === `ledger`) {
         return [
           {
-            key: `Ledger Nano S`,
+            key: `Ledger Nano`,
             value: signWithLedger
           }
         ]
@@ -261,26 +261,26 @@ export default {
         await this.connectLedger()
       }
 
-      const { type, ...properties } = this.transactionData
+      const { type, ...transactionProperties } = this.transactionData
 
       const gasPrice = {
         amount: this.gasPrice,
         denom: this.context.bondDenom
       }
 
+      const feePropertiess = {
+        gasEstimate: this.gasEstimate,
+        gasPrice: gasPrice,
+        selectedSignMethod: this.selectedSignMethod,
+        password: this.password
+      }
+
       try {
-        await actionManager.send(
-          type,
-          properties,
-          this.gasEstimate,
-          gasPrice,
-          this.selectedSignMethod,
-          this.password
-        )
+        await actionManager.send(type, transactionProperties, ...feePropertiess)
         track(`event`, `successful-submit`, this.title, this.selectedSignMethod)
         // this.close()
         this.$store.commit(`notify`, this.notifyMessage)
-        this.postSubmit(properties)
+        this.postSubmit(transactionProperties, feePropertiess)
       } catch ({ message }) {
         this.submissionError = `${this.submissionErrorPrefix}: ${message}.`
         track(`event`, `failed-submit`, this.title, message)

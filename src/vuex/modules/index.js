@@ -17,5 +17,6 @@ export default opts => ({
   wallet: require(`./wallet.js`).default(opts),
   keybase: require(`./keybase.js`).default(opts),
   stakingParameters: require(`./parameters.js`).default(opts),
-  pool: require(`./pool.js`).default(opts)
+  pool: require(`./pool.js`).default(opts),
+  send: require(`./send.js`).default(opts)
 })
