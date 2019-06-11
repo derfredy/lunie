@@ -116,7 +116,7 @@ Prerequesits:
 To open Lunie in Xcode:
   
 ```bash
-$ yarn build`
+$ yarn build
 $ npx @capacitor/cli sync ios
 $ npx @capacitor/cli open ios
 ```
@@ -139,7 +139,26 @@ $ yarn build
 $ npx @capacitor/cli sync android|ios
 ```
 
-The mobile packages of Lunie need to be released using the individual software (Android Studio / Xcode).
+Then use fastlane to release:
+
+### Prerequesits
+
+- [install fastlane}(https://docs.fastlane.tools/getting-started/android/setup/)
+
+#### Android
+
+- add keystore.jks and json_key.json to android/fastlane
+- add android/.env with all necessary environment variables
+
+#### Release
+
+```bash
+$ cd android
+$ bundle exec fastlande android_set_version_code
+$ bundle exec fastlane android internal
+```
+
+Finally checking the version increment to git
 
 ## Testing
 
