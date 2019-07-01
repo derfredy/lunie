@@ -243,6 +243,9 @@ if (process.env.NODE_ENV === `production`) {
         // 'style-src': production ? `'self'` : `*`, // SECURITY Appzi is applying styles inline, inquired to them already
         "style-src": [`'self'`, `'unsafe-inline'`],
         "connect-src": [
+          // DAppNode Package
+          `http://cosmos.public.dappnode`,
+          `wss://cosmos.public.dappnode:26657`,	 
           // third party tools
           `https://sentry.io`,
           `https://appzi-collector-b.azurewebsites.net`,
