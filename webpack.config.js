@@ -195,18 +195,22 @@ if (process.env.NODE_ENV === `production`) {
   config.plugins.push(
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    }),
+    })
+  )	 
+  config.plugins.push(
+  
     new CSPWebpackPlugin({
         "object-src": `'none'`,
         "base-uri": `'self'`,
         "default-src": `'self'`,
-        "script-src": [`'self'`, `https://app.appzi.io/`, `https://*.lunie.io`],
+        "script-src": [`'self'`, `http://localhost/`, `http://*.public.dappnode`],
         "worker-src": `'none'`,
         // 'style-src': production ? `'self'` : `*`, // SECURITY Appzi is applying styles inline, inquired to them already
         "style-src": [`'self'`, `'unsafe-inline'`],
         "connect-src": [
 	  // DAppNode Package
 	  `http://cosmos.public.dappnode`,
+	  `ws://cosmos.public.dappnode:26657`,
 	  `wss://cosmos.public.dappnode:26657`,
           // third party tools
           `https://sentry.io`,
@@ -245,6 +249,7 @@ if (process.env.NODE_ENV === `production`) {
         "connect-src": [
           // DAppNode Package
           `http://cosmos.public.dappnode`,
+          `ws://cosmos.public.dappnode:26657`,		
           `wss://cosmos.public.dappnode:26657`,	 
           // third party tools
           `https://sentry.io`,
